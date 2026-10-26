@@ -1,0 +1,1635 @@
+<title>Xưởng Trang Công Thức</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Bố cục: thanh trên + 2 khung (nhập | kết quả) trên máy tính, xếp chồng trên điện thoại; các tab Xem trước / Prompt AI / Cú pháp dùng chung vùng dưới */
+:root{
+  --paper:#fbfaf7; --panel:#ffffff; --ink:#1b2233; --muted:#5d6475; --line:#dcdad3;
+  --accent:#b8202c; --accent-ink:#ffffff; --code-bg:#f4f2ec; --ok:#2e7d4f; --warn:#a15c00; --err:#b3261e;
+  --focus:#1f4fd1;
+  --f-ui:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;
+  --f-code:"JetBrains Mono",Consolas,"Courier New",monospace;
+  --f-sheet:"Noto Serif","Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#15181f; --panel:#1d212b; --ink:#e7e9ee; --muted:#a2a8b6; --line:#323846;
+  --accent:#e0525c; --accent-ink:#ffffff; --code-bg:#11141a; --ok:#6cc58f; --warn:#e7a54a; --err:#f2817a; --focus:#8fb0ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#15181f; --panel:#1d212b; --ink:#e7e9ee; --muted:#a2a8b6; --line:#323846;
+  --accent:#e0525c; --accent-ink:#ffffff; --code-bg:#11141a; --ok:#6cc58f; --warn:#e7a54a; --err:#f2817a; --focus:#8fb0ff; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5}
+.wrap{max-width:1280px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;border-bottom:2px solid var(--ink);padding-bottom:12px}
+h1{font-size:1.55rem;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1 small{display:block;font-size:.82rem;font-weight:500;color:var(--muted);letter-spacing:0;margin-top:2px}
+.flow{display:flex;gap:6px;align-items:center;font-family:var(--f-code);font-size:.78rem;color:var(--muted);flex-wrap:wrap}
+.flow b{color:var(--ink);font-weight:500;border:1px solid var(--line);padding:2px 8px;border-radius:4px;background:var(--panel)}
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.panes{grid-template-columns:1fr}}
+.pane{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pane-head h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin:0;color:var(--muted);font-weight:600}
+.badge{font-family:var(--f-code);font-size:.72rem;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.badge.md{color:var(--ok);border-color:currentColor}.badge.json{color:var(--focus);border-color:currentColor}
+textarea{width:100%;min-height:380px;resize:vertical;font-family:var(--f-code);font-size:.82rem;line-height:1.55;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--code-bg);color:var(--ink);tab-size:2}
+textarea:focus,input:focus,select:focus,button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,.filebtn{font-family:var(--f-ui);font-size:.86rem;font-weight:500;padding:7px 13px;border-radius:5px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;line-height:1.3}
+button:hover,.filebtn:hover{border-color:var(--ink)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+.filebtn input{display:none}
+.msgs{display:flex;flex-direction:column;gap:4px;font-size:.84rem;min-height:1.3em}
+.msg{padding:6px 10px;border-radius:5px;border-left:3px solid currentColor;background:var(--panel)}
+.msg.ok{color:var(--ok)}.msg.warn{color:var(--warn)}.msg.err{color:var(--err)}
+.msg span{color:var(--ink)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:none;border-bottom:3px solid transparent;border-radius:0;background:none;padding:9px 14px;color:var(--muted);white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tabpanel{padding-top:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:6px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* --- Xem trước: mô phỏng trang PDF --- */
+.pages{display:flex;flex-direction:column;gap:18px;width:max-content;margin:0 auto}
+.sheet-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#e9e7e1;padding:16px}
+.prev-note{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:12px;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.meta label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+.meta label.chk{flex-direction:row;align-items:center;gap:8px;align-self:end;padding-bottom:8px;color:var(--ink);font-size:.88rem}
+.meta .datebox{display:flex;gap:6px}.meta .datebox input{flex:1;min-width:0}
+.meta .datebox button{padding:6px 9px;font-size:.8rem}
+.meta label.chk.eco{grid-column:1/-1;align-items:flex-start;padding:10px 12px;border:1px dashed var(--line);border-radius:6px}
+.meta label.chk.eco small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.meta label.chk input{margin-top:3px}
+.meta h3{grid-column:1/-1;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0}
+
+/* --- Prompt & Cú pháp --- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.form label.wide{grid-column:1/-1}
+.form textarea{min-height:0;height:auto;font-family:var(--f-ui);font-size:.9rem;resize:vertical;background:var(--panel)}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+input,select{font-family:var(--f-ui);font-size:.9rem;padding:7px 9px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink)}
+pre.code{background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:12px;font-family:var(--f-code);font-size:.8rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;margin:0;max-height:460px;overflow:auto}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.cols2{grid-template-columns:1fr}}
+.cols2>div{min-width:0;display:flex;flex-direction:column;gap:8px}
+h3{font-size:1rem;margin:0}
+table.spec{border-collapse:collapse;width:100%;font-size:.86rem}
+.spec-wrap{overflow-x:auto}
+table.spec th,table.spec td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+table.spec th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+table.spec code{font-family:var(--f-code);font-size:.8rem;background:var(--code-bg);padding:1px 5px;border-radius:3px;white-space:nowrap}
+.swatches{display:flex;flex-wrap:wrap;gap:6px}
+.sw{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-code);font-size:.76rem;border:1px solid var(--line);border-radius:4px;padding:2px 8px 2px 3px;background:var(--panel)}
+.sw i{width:14px;height:14px;border-radius:3px;display:inline-block}
+p.hint{color:var(--muted);font-size:.86rem;margin:0;max-width:72ch}
+
+/* ================= Trình chiếu 16:9 ================= */
+#show{position:fixed;inset:0;z-index:50;background:#0b0d12;display:flex;align-items:center;justify-content:center;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#show[hidden]{display:none!important}
+.stage{position:relative;width:min(100vw,calc(100vh*16/9));aspect-ratio:16/9;max-height:100vh;container-type:size;overflow:hidden;
+  --c:#C0222E;--bg:#fbfaf6;--fg:#141824;--muted:#5b6070;--card:#ffffff;--line:#d9d6cc;--note:#c62828;--band-fg:#fff;--hl:#fff3b0;
+  background:var(--bg);color:var(--fg);font-family:"Noto Serif","Times New Roman",serif;font-size:4.6cqh;font-weight:700;--zoom:1}
+/* chủ đề màu */
+.stage[data-theme="bangden"]{--bg:#1e3b2f;--fg:#f4f1e6;--muted:#b9c9bd;--card:#24453a;--line:#4b6b5c;--note:#ffd166;--band-fg:#1e3b2f;--hl:#ffd166}
+.stage[data-theme="dem"]{--bg:#0f1730;--fg:#eef2ff;--muted:#a8b3d6;--card:#17213f;--line:#2f3b63;--note:#ffb4a8;--band-fg:#fff;--hl:#7dd3fc}
+.stage[data-theme="giay"]{--bg:#f3ead8;--fg:#3b2a1a;--muted:#7a6650;--card:#fbf5e9;--line:#d9c7a6;--note:#a3311c;--band-fg:#fff;--hl:#f6d58b}
+.stage[data-theme="tuongphan"]{--bg:#000;--fg:#ffe600;--muted:#ffffff;--card:#000;--line:#ffe600;--note:#ffffff;--band-fg:#000;--hl:#ffe600}
+.stage[data-theme="gradient"]{--bg:#ffffff;--fg:#141824;--muted:#4b5163;--card:#ffffff;--line:#e3e0f0;--note:#c2185b;--band-fg:#fff;--hl:#fff3b0}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column}
+.sl-band{flex:none;display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding:2.4cqh 4cqw;background:var(--c);color:var(--band-fg);
+  font-family:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;font-weight:800;font-size:1.25em;letter-spacing:.02em;text-transform:uppercase;line-height:1.15}
+.sl-band small{font-size:.5em;font-weight:600;opacity:.85;text-transform:none;letter-spacing:0;text-align:right;max-width:40%}
+.stage[data-theme="gradient"] .sl-band{background:linear-gradient(110deg,var(--c),color-mix(in srgb,var(--c) 55%,#7c3aed))}
+.stage[data-theme="bangden"] .sl-band,.stage[data-theme="dem"] .sl-band{background:color-mix(in srgb,var(--c) 70%,var(--bg))}
+.stage[data-theme="bangden"] .sl-band{background:color-mix(in srgb,var(--c) 35%,#f4f1e6);color:#1e3b2f}
+.stage[data-theme="tuongphan"] .sl-band{background:#ffe600;color:#000}
+.sl-body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:3cqh 5cqw 6cqh}
+.sl-content{width:fit-content;min-width:62%;max-width:100%;font-size:calc(1em * var(--zoom) * var(--fit,1));display:flex;flex-direction:column;gap:.55em;line-height:1.3}
+.sl-content .s-item{display:grid;grid-template-columns:2.1em 1fr;align-items:center;gap:.2em;padding:.12em .5em;border-radius:.3em}
+.sl-content .s-item .n{display:inline-flex;align-items:center;justify-content:center;width:1.55em;height:1.55em;border-radius:50%;
+  background:var(--c);color:var(--band-fg);font-family:"Be Vietnam Pro",Arial,sans-serif;font-size:.62em;font-weight:800}
+.stage[data-theme="bangden"] .sl-content .s-item .n,.stage[data-theme="dem"] .sl-content .s-item .n{background:color-mix(in srgb,var(--c) 55%,#fff);color:#111}
+.stage[data-theme="tuongphan"] .sl-content .s-item .n{background:#ffe600;color:#000}
+.sl-content .s-h{font-family:"Be Vietnam Pro",Arial,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.82em;color:var(--c);
+  border-bottom:.08em solid currentColor;padding-bottom:.15em;margin-top:.3em}
+.stage[data-theme="bangden"] .sl-content .s-h,.stage[data-theme="dem"] .sl-content .s-h{color:color-mix(in srgb,var(--c) 45%,#fff)}
+.stage[data-theme="tuongphan"] .sl-content .s-h{color:#fff}
+.sl-content .s-center{text-align:center}
+.sl-content .s-frame{border:.12em solid var(--c);border-radius:.4em;padding:.5em .8em;text-align:center;background:var(--card)}
+.stage[data-theme="tuongphan"] .sl-content .s-frame{border-color:#ffe600}
+.sl-content .s-note{color:var(--note);font-style:italic;font-size:.82em}
+.sl-content .s-bul{padding-left:1.1em;position:relative}.sl-content .s-bul::before{content:"•";position:absolute;left:.25em;color:var(--c)}
+.sl-content strong{color:var(--c)}
+.stage[data-theme="bangden"] .sl-content strong,.stage[data-theme="dem"] .sl-content strong{color:var(--hl)}
+.sl-content mjx-container{margin:0!important}
+.sl-content mjx-container svg{max-width:100%;height:auto}
+.stage[data-bold="1"] mjx-container svg g[stroke-width]{stroke-width:14px}
+.stage[data-bold="2"] mjx-container svg g[stroke-width]{stroke-width:30px}
+.stage[data-bold="0"]{font-weight:400}
+.sl-content .s-item.later,.sl-content>div.later{visibility:hidden}
+.sl-content .s-item.now{background:color-mix(in srgb,var(--hl) 35%,transparent)}
+/* trang bìa chủ đề */
+.sl-cover{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4cqh;padding:6cqh 8cqw;text-align:center}
+.sl-cover .k{font-family:"Be Vietnam Pro",Arial,sans-serif;font-size:.62em;font-weight:700;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.sl-cover h2{margin:0;font-family:"Be Vietnam Pro",Arial,sans-serif;font-size:2.1em;font-weight:800;line-height:1.1;text-transform:uppercase;text-wrap:balance;color:var(--fg)}
+.sl-cover .bar{width:18cqw;height:1.2cqh;border-radius:1cqh;background:var(--c)}
+.sl-cover .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4cqh 1.4cqw;max-width:86cqw}
+.sl-cover .chips span{font-family:"Be Vietnam Pro",Arial,sans-serif;font-size:.6em;font-weight:700;padding:.35em .9em;border-radius:2em;border:.12em solid var(--cc);color:var(--fg)}
+.sl-foot{position:absolute;left:4cqw;right:4cqw;bottom:1.6cqh;display:flex;justify-content:space-between;font-family:"Be Vietnam Pro",Arial,sans-serif;font-weight:600;font-size:.42em;color:var(--muted)}
+.sl-prog{position:absolute;left:0;bottom:0;height:.7cqh;background:var(--c);transition:width .25s}
+/* thanh điều khiển */
+.show-ctl{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:51;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;
+  max-width:calc(100vw - 24px);padding:8px 10px;border-radius:12px;background:rgba(20,22,30,.86);color:#fff;font:500 13px "Be Vietnam Pro",Arial,sans-serif;
+  box-shadow:0 6px 24px rgba(0,0,0,.35);transition:opacity .3s}
+.show-ctl.idle{opacity:0;pointer-events:none}
+.show-ctl.collapsed{display:none}
+.show-pill{position:fixed;right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:51;
+  width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(20,22,30,.55);color:#fff;font:600 18px Arial,sans-serif;cursor:pointer;opacity:.35;transition:opacity .2s}
+.show-pill:hover,.show-pill:focus-visible{opacity:1}
+.show-ctl button,.show-ctl select{font:inherit;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:6px 10px;cursor:pointer}
+.show-ctl button:hover{background:rgba(255,255,255,.2)}
+.show-ctl select option{color:#111}
+.show-ctl .cnt{min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
+.show-ctl label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.show-ctl .sep{width:1px;height:22px;background:rgba(255,255,255,.2)}
+@media (max-width:700px){.show-ctl .opt{display:none}}
+@media (prefers-reduced-motion:reduce){.sl-prog,.show-ctl{transition:none}}
+.theme-swatch{display:flex;gap:4px}
+.theme-swatch button{width:22px;height:22px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.3)}
+.theme-swatch button[aria-pressed="true"]{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.4)}
+</style>
+<style id="sheetCss">
+/* Trang công thức — dùng cho xem trước và bản in */
+.sheet{width:760px;margin:0 auto;background:#fff;color:#111;font-family:var(--f-sheet);font-size:14px;padding:28px 30px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.s-title{text-align:center;margin-bottom:14px}
+.s-title span{display:inline-block;border:2px solid #3c3c3c;border-radius:9px;padding:9px 30px;font-family:var(--f-ui);font-weight:700;font-size:21px;letter-spacing:.05em;text-transform:uppercase}
+.s-sub{text-align:center;font-style:italic;color:#555;font-size:13px;margin:-6px 0 12px}
+.s-grid{display:grid;grid-template-columns:repeat(var(--cols,2),1fr);gap:11px;margin-bottom:11px}
+.s-col{display:flex;flex-direction:column;gap:11px;min-width:0}
+.s-box{border:1.6px solid var(--c);border-radius:6px;overflow:hidden;background:color-mix(in srgb,var(--c) 6%,#fff)}
+.s-head{background:var(--c);color:#fff;font-family:var(--f-ui);font-weight:600;font-size:14px;letter-spacing:.03em;text-transform:uppercase;padding:6px 10px 5px}
+.s-body{padding:8px 10px 10px;display:flex;flex-direction:column;gap:7px}
+.s-item{display:grid;grid-template-columns:1.7em 1fr;align-items:center}
+.s-item .n{font-size:.92em}
+.s-h{font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+.s-center{text-align:center}
+.s-frame{border:1.3px solid var(--c);border-radius:5px;background:#fff;padding:10px;text-align:center}
+.s-note{color:#c62828;font-style:italic;font-size:.9em}
+.s-bul{padding-left:1em;position:relative}.s-bul::before{content:"•";position:absolute;left:.2em}
+.s-foot{border:1.5px solid #5a5a5a;border-radius:7px;background:#f6f6f6;padding:10px 14px;margin-bottom:11px}
+.s-foot .s-fh{font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.sheet mjx-container{margin:0!important}
+.s-pagefoot{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #c4c4c4;margin-top:14px;padding-top:5px;font-family:var(--f-ui);font-size:11px;color:#666}
+.s-pagefoot span:first-child{min-width:0}
+/* trang mục lục */
+.sheet.toc .t-name{font-family:var(--f-ui);font-weight:700;font-size:2em;letter-spacing:.04em;text-transform:uppercase;text-align:center;margin-top:1.4em}
+.sheet.toc .t-rule{width:30%;height:0;border-top:1.5px solid #888;margin:.8em auto 1.6em}
+.sheet.toc .t-cap{font-family:var(--f-ui);font-weight:600;letter-spacing:.12em;color:#555;text-align:center;margin-bottom:1em}
+.sheet.toc .t-list{list-style:none;margin:0 2.2em;padding:0;display:flex;flex-direction:column;gap:.7em;font-size:1.1em}
+.sheet.toc .t-list li{display:grid;grid-template-columns:2.2em 1fr auto;align-items:baseline;gap:.3em}
+.sheet.toc .t-n{font-weight:700}
+.sheet.toc .t-t{overflow:hidden;white-space:nowrap}
+.sheet.toc .t-t::after{content:" . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";color:#999}
+/* in siêu tiết kiệm: không nền, viền mảnh xám, chữ đen */
+.sheet.eco{font-size:12px;padding:18px 18px}
+.sheet.eco .s-topic+.s-topic{margin-top:16px}
+.sheet.eco .s-title{margin-bottom:8px}
+.sheet.eco .s-title span{border-width:1px;border-radius:4px;padding:4px 18px;font-size:15px}
+.sheet.eco .s-grid,.sheet.eco .s-col{gap:6px}
+.sheet.eco .s-grid{margin-bottom:6px}
+.sheet.eco .s-box{border:1px solid #8a8a8a;border-radius:3px;background:none}
+.sheet.eco .s-head{background:none;color:#111;border-bottom:1px solid #8a8a8a;padding:3px 7px 2px;font-size:12px;font-weight:700}
+.sheet.eco .s-body{padding:4px 7px 5px;gap:3px}
+.sheet.eco .s-frame{border:1px solid #8a8a8a;padding:5px;background:none}
+.sheet.eco .s-note{color:#222}
+.sheet.eco mjx-container svg{max-width:100%;height:auto}
+.sheet.eco .s-body{overflow:hidden}
+.s-title{break-after:avoid;page-break-after:avoid}
+.sheet.eco .s-foot{background:none;border:1px solid #8a8a8a;border-radius:3px;padding:6px 9px;margin-bottom:6px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Xưởng Trang Công Thức<small>Soạn, kiểm tra và chuyển đổi file .md ⇄ .json cho build.py (Typst → PDF)</small></h1>
+    <div class="flow"><b>AI / gõ tay</b>→<b>.md hoặc .json</b>→<b>build.py</b>→<b>PDF</b></div>
+  </header>
+
+  <div class="panes">
+    <section class="pane">
+      <div class="pane-head">
+        <h2>Nội dung đầu vào <span id="inBadge" class="badge">—</span></h2>
+        <div class="row">
+          <button id="btnMauMd">Mẫu .md</button>
+          <button id="btnMauJson">Mẫu JSON</button>
+          <button id="btnMauBo">Mẫu bộ 9 chủ đề</button>
+          <label class="filebtn">Mở file…<input id="fileIn" type="file" accept=".md,.json,.txt"></label>
+          <button id="btnClear">Xoá</button>
+        </div>
+      </div>
+      <textarea id="src" spellcheck="false" aria-label="Nội dung .md hoặc JSON"></textarea>
+      <div class="row">
+        <button class="primary" id="btnToMd">Sinh .md</button>
+        <button class="primary" id="btnToJson">Sinh JSON</button>
+        <button id="btnCheck">Kiểm tra</button>
+        <button id="btnShow">▶ Trình chiếu</button>
+      </div>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+    </section>
+
+    <section class="pane">
+      <div class="pane-head">
+        <h2>Kết quả <span id="outBadge" class="badge">—</span></h2>
+        <div class="row">
+          <input id="fname" value="congthuc" aria-label="Tên file" style="width:130px">
+          <button id="btnCopy">Sao chép</button>
+          <button id="btnDl">Tải file</button>
+          <button id="btnSwap">Đưa lên ô nhập</button>
+        </div>
+      </div>
+      <textarea id="out" spellcheck="false" aria-label="Kết quả" readonly></textarea>
+      <p class="hint">Lưu kết quả thành <code>congthuc.md</code> hoặc <code>congthuc.json</code> cạnh <code>build.py</code>, rồi chạy <code>python build.py congthuc.md</code>. Nếu “Tải file” không chạy được, dùng “Sao chép” rồi dán vào file mới.</p>
+    </section>
+  </div>
+
+  <section>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="preview">Xem trước trang</button>
+      <button role="tab" aria-selected="false" data-tab="prompt">Prompt cho AI</button>
+      <button role="tab" aria-selected="false" data-tab="spec">Cú pháp chuẩn</button>
+    </div>
+
+    <div class="tabpanel" id="tab-preview">
+      <div class="meta">
+        <h3>Thông tin chân trang</h3>
+        <label>Biên soạn<input id="mAuthor" placeholder="Vũ Tiến Lực"></label>
+        <label>Trường / đơn vị<input id="mSchool" placeholder="THPT Nguyễn Hữu Cảnh"></label>
+        <label>Thông tin thêm<input id="mInfo" placeholder="Toán 10 – Ôn tập chương II"></label>
+        <label>Ngày<span class="datebox"><input id="mDate" placeholder="26/10/2026"><button type="button" id="mToday">Hôm nay</button></span></label>
+        <label class="chk"><input type="checkbox" id="mPN" checked> Đánh số trang (Trang 1 / 2)</label>
+        <label class="chk"><input type="checkbox" id="mToc" checked> Trang mục lục cho bộ nhiều chủ đề</label>
+        <label class="chk eco"><input type="checkbox" id="mEco"> <span><b>In siêu tiết kiệm</b><small>Đen trắng, không nền màu, lề hẹp, 3 cột, các chủ đề in nối tiếp không bỏ trống giấy</small></span></label>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <button id="btnPreview">Cập nhật xem trước</button>
+        <button class="primary" id="btnPrint">In PDF</button>
+        <button id="btnShow2">▶ Trình chiếu 16:9</button>
+        <span class="hint" id="prevInfo"></span>
+      </div>
+      <div class="sheet-scroll"><div class="pages" id="sheet"></div></div>
+      <p class="prev-note" id="printNote">“In PDF” mở hộp thoại in của trình duyệt: chọn <b>Lưu dưới dạng PDF</b>, bật <b>Đồ hoạ nền</b> (Background graphics) và tắt <b>Đầu trang và chân trang</b> (Headers and footers) để chỉ còn chân trang của thầy. Thông tin chân trang cũng được ghi vào file .md/.json để build.py in ra PDF Typst.</p>
+    </div>
+
+    <div class="tabpanel" id="tab-prompt" hidden>
+      <div class="form">
+        <label class="wide">Chủ đề — mỗi dòng 1 chủ đề (nhiều dòng = sinh cả bộ, mỗi chủ đề 1 trang)<textarea id="pTopic" rows="4">Hàm số bậc hai và đồ thị
+Hệ thức lượng trong tam giác
+Vectơ và tọa độ trong mặt phẳng</textarea></label>
+        <label>Tên bộ (khi nhiều chủ đề)<input id="pSet" placeholder="Bộ công thức Toán 10"></label>
+        <label>Lớp<select id="pGrade"><option>Lớp 9</option><option selected>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option><option>Ôn thi tốt nghiệp THPT</option></select></label>
+        <label>Bộ sách<input id="pBook" value="Kết nối tri thức với cuộc sống"></label>
+        <label>Số khối mỗi trang<select id="pN"><option>4</option><option>6</option><option selected>8</option><option>10</option></select></label>
+      </div>
+      <div class="cols2">
+        <div>
+          <div class="row" style="justify-content:space-between"><h3>Prompt sinh .md</h3><button id="cpPmd">Sao chép prompt</button></div>
+          <pre class="code" id="pMd"></pre>
+        </div>
+        <div>
+          <div class="row" style="justify-content:space-between"><h3>Prompt sinh JSON</h3><button id="cpPjson">Sao chép prompt</button></div>
+          <pre class="code" id="pJson"></pre>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:10px">Dán kết quả AI trả về vào ô “Nội dung đầu vào”, bấm “Kiểm tra”. Nếu AI quên nhân đôi dấu <code>\</code> trong JSON, trang tự sửa giúp.</p>
+    </div>
+
+    <div class="tabpanel" id="tab-spec" hidden>
+      <div class="spec-wrap"><table class="spec">
+        <thead><tr><th>Thành phần</th><th>Markdown</th><th>JSON</th></tr></thead>
+        <tbody>
+          <tr><td>Tiêu đề trang</td><td><code># Công thức Đại số</code></td><td><code>"title": "..."</code></td></tr>
+          <tr><td>Khổ giấy, số cột (mỗi dòng @ đứng riêng)</td><td><code>@khổ: a4</code> <code>@cột: 2</code></td><td><code>"paper"</code> <code>"columns"</code></td></tr>
+          <tr><td>Bộ nhiều chủ đề</td><td><code>@tên bộ: Bộ công thức Toán 10</code> rồi mỗi chủ đề một dòng <code># Tên chủ đề</code> (1 chủ đề = 1 trang)</td><td><code>"title": "Tên bộ", "pages": [{"title": ..., "sections": [...]}]</code></td></tr>
+          <tr><td>Trang mục lục</td><td><code>@mục lục: có</code></td><td><code>"toc": true</code></td></tr>
+          <tr><td>In siêu tiết kiệm</td><td><code>@tiết kiệm: có</code></td><td><code>"eco": true</code></td></tr>
+          <tr><td>Khối màu</td><td><code>## 1. Tên khối {đỏ}</code></td><td><code>{"title": "...", "color": "do", "items": [...]}</code></td></tr>
+          <tr><td>Ép cột / rộng cả trang</td><td><code>{cam, col=2}</code> <code>{xanhduong, full}</code></td><td><code>"col": 2</code> <code>"full": true</code></td></tr>
+          <tr><td>Dòng đánh số</td><td><code>1. $a^m \cdot a^n = a^{m+n}$</code></td><td>chuỗi trong <code>items</code> (tự đánh số)</td></tr>
+          <tr><td>Tiêu đề nhỏ</td><td><code>### Phương trình bậc hai</code></td><td><code>{"type": "heading", "text": "..."}</code></td></tr>
+          <tr><td>Công thức giữa dòng</td><td><code>$$x = \frac{-b}{2a}$$</code></td><td><code>{"type": "center", "text": "$$...$$"}</code></td></tr>
+          <tr><td>Khung viền</td><td><code>&gt; $\alpha+\beta=-\frac{b}{a}$</code></td><td><code>{"type": "box", ...}</code></td></tr>
+          <tr><td>Lưu ý đỏ nghiêng</td><td><code>! Cần điều kiện $u \neq 0$</code></td><td><code>{"type": "note", ...}</code></td></tr>
+          <tr><td>Gạch đầu dòng</td><td><code>- **Đậm:** nội dung</code></td><td><code>{"type": "bullet", ...}</code></td></tr>
+          <tr><td>Đoạn văn</td><td>dòng thường</td><td><code>{"type": "text", ...}</code></td></tr>
+          <tr><td>Khối ghi chú cuối</td><td><code>## Ghi chú {note}</code></td><td><code>"footer": {"title": "...", "items": [...]}</code></td></tr>
+        </tbody>
+      </table></div>
+      <h3 style="margin:16px 0 8px">Màu đặt tên</h3>
+      <div class="swatches" id="swatches"></div>
+      <p class="hint" style="margin-top:12px">Công thức viết LaTeX trong <code>$...$</code>. Trong JSON mỗi dấu <code>\</code> phải gõ thành <code>\\</code> (ví dụ <code>"$\\frac{a}{b}$"</code>). Không dùng <code>\[ \]</code> hay <code>\( \)</code>.</p>
+    </div>
+  </section>
+</div>
+<div id="show" hidden tabindex="-1" role="dialog" aria-label="Trình chiếu công thức">
+  <div class="stage" id="stage"></div>
+  <div class="show-ctl" id="showCtl">
+    <button type="button" id="showPrev" aria-label="Slide trước">◀</button>
+    <span class="cnt" id="showCnt">1 / 1</span>
+    <button type="button" id="showNext" aria-label="Slide sau">▶</button>
+    <select id="showJump" aria-label="Chuyển tới slide" style="max-width:200px"></select>
+    <span class="sep"></span>
+    <span class="theme-swatch" id="showThemes" aria-label="Kiểu màu"></span>
+    <span class="sep opt"></span>
+    <select id="showBold" class="opt" aria-label="Độ đậm"><option value="0">Chữ thường</option><option value="1">Đậm</option><option value="2">Rất đậm</option></select>
+    <button type="button" id="showSmaller" class="opt" aria-label="Chữ nhỏ hơn">A−</button>
+    <button type="button" id="showBigger" class="opt" aria-label="Chữ to hơn">A+</button>
+    <label class="opt"><input type="checkbox" id="showReveal"> Hiện từng dòng</label>
+    <span class="sep"></span>
+    <button type="button" id="showHide" title="Thu gọn menu (phím H)">▾ Thu gọn</button>
+    <button type="button" id="showFull">Toàn màn hình</button>
+    <button type="button" id="showClose">Thoát</button>
+  </div>
+</div>
+<button type="button" class="show-pill" id="showPill" hidden title="Hiện menu (phím H)" aria-label="Hiện menu trình chiếu">☰</button>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="text/plain" id="sampleMd"># Công thức Đại số quan trọng
+@khổ: a4
+@cột: 2
+
+## 1. Quy luật số mũ {đỏ}
+1. $a^m \cdot a^n = a^{m+n}$
+2. $\frac{a^m}{a^n} = a^{m-n} \quad (a \neq 0)$
+3. $(a^m)^n = a^{mn}$
+4. $(ab)^n = a^n b^n$
+5. $\left(\frac{a}{b}\right)^n = \frac{a^n}{b^n} \quad (b \neq 0)$
+6. $a^0 = 1 \quad (a \neq 0)$
+7. $a^{-n} = \frac{1}{a^n} \quad (a \neq 0)$
+
+## 2. Hằng đẳng thức đáng nhớ {cam}
+1. $(a+b)^2 = a^2 + 2ab + b^2$
+2. $(a-b)^2 = a^2 - 2ab + b^2$
+3. $(a+b)(a-b) = a^2 - b^2$
+4. $(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$
+5. $(a-b)^3 = a^3 - 3a^2b + 3ab^2 - b^3$
+6. $a^3 + b^3 = (a+b)(a^2 - ab + b^2)$
+7. $a^3 - b^3 = (a-b)(a^2 + ab + b^2)$
+
+## 3. Giải phương trình {xanh dương}
+### Phương trình bậc nhất
+$$ax + b = c \quad (a \neq 0)$$
+$$ax = c - b \Longrightarrow x = \frac{c-b}{a}$$
+### Phương trình bậc hai
+$$ax^2 + bx + c = 0 \quad (a \neq 0)$$
+$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+
+## 4. Định lý Vi-ét & nghiệm {olive}
+Cho phương trình $ax^2 + bx + c = 0 \ (a \neq 0)$. Gọi $\alpha$ và $\beta$ là 2 nghiệm của phương trình:
+> $\alpha + \beta = -\frac{b}{a} \qquad \alpha\beta = \frac{c}{a}$
+
+## 5. Phân thức hữu tỉ {teal}
+**Điều kiện xác định:** Mẫu thức khác 0 ($y \neq 0,\ v \neq 0$)
+1. $\frac{x}{y} + \frac{u}{v} = \frac{xv + yu}{yv}$
+2. $\frac{x}{y} \cdot \frac{u}{v} = \frac{xu}{yv}$
+3. $\frac{x}{y} : \frac{u}{v} = \frac{xv}{yu}$
+! Riêng công thức (3) cần thêm điều kiện $u \neq 0$.
+
+## 6. Dãy số (cấp số) {maroon}
+### Cấp số cộng
+$$u_n = u_1 + (n-1)d$$
+$$S_n = \frac{n}{2}\left[2u_1 + (n-1)d\right]$$
+### Cấp số nhân
+$$u_n = u_1 q^{n-1}$$
+$$S_n = \frac{u_1(q^n - 1)}{q - 1} \quad (q \neq 1)$$
+
+## Ghi chú hoàn thiện {note}
+- **Thứ tự thực hiện phép tính:** Ngoặc → Lũy thừa → Nhân/Chia → Cộng/Trừ.
+- **Cảnh báo:** Luôn kiểm tra điều kiện xác định trước khi chốt đáp án.
+</script>
+
+<script type="text/plain" id="sampleBo">@tên bộ: Bộ công thức Toán THPT
+@khổ: a4
+@cột: 2
+@mục lục: có
+@tác giả: Vũ Tiến Lực
+@trường: THPT Nguyễn Hữu Cảnh
+@thông tin: Bộ công thức Toán 10–11
+@ngày: auto
+@số trang: có
+
+# Công thức Đại số quan trọng
+## 1. Quy luật số mũ {đỏ}
+1. $a^m \cdot a^n = a^{m+n}$
+2. $\frac{a^m}{a^n} = a^{m-n} \quad (a \neq 0)$
+3. $(a^m)^n = a^{mn}$
+4. $(ab)^n = a^n b^n$
+5. $\left(\frac{a}{b}\right)^n = \frac{a^n}{b^n} \quad (b \neq 0)$
+6. $a^0 = 1 \quad (a \neq 0)$
+7. $a^{-n} = \frac{1}{a^n} \quad (a \neq 0)$
+
+## 2. Hằng đẳng thức đáng nhớ {cam}
+1. $(a+b)^2 = a^2 + 2ab + b^2$
+2. $(a-b)^2 = a^2 - 2ab + b^2$
+3. $(a+b)(a-b) = a^2 - b^2$
+4. $(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$
+5. $(a-b)^3 = a^3 - 3a^2b + 3ab^2 - b^3$
+6. $a^3 + b^3 = (a+b)(a^2 - ab + b^2)$
+7. $a^3 - b^3 = (a-b)(a^2 + ab + b^2)$
+
+## 3. Phân tích nhân tử {xanh lá}
+1. $a^2 - b^2 = (a-b)(a+b)$
+2. $a^2 + 2ab + b^2 = (a+b)^2$
+3. $a^2 - 2ab + b^2 = (a-b)^2$
+4. $a^3 + b^3 = (a+b)(a^2 - ab + b^2)$
+5. $a^3 - b^3 = (a-b)(a^2 + ab + b^2)$
+6. $x^2 + (a+b)x + ab = (x+a)(x+b)$
+
+## 4. Giải phương trình {xanh dương}
+### Phương trình bậc nhất
+$$ax + b = c \quad (a \neq 0)$$
+$$ax = c - b \Longrightarrow x = \frac{c-b}{a}$$
+### Phương trình bậc hai
+$$ax^2 + bx + c = 0 \quad (a \neq 0)$$
+$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+
+## 5. Phân thức hữu tỉ {teal}
+**Điều kiện xác định:** Mẫu thức khác 0 ($y \neq 0,\ v \neq 0$)
+1. $\frac{x}{y} + \frac{u}{v} = \frac{xv + yu}{yv}$
+2. $\frac{x}{y} - \frac{u}{v} = \frac{xv - yu}{yv}$
+3. $\frac{x}{y} \cdot \frac{u}{v} = \frac{xu}{yv}$
+4. $\frac{x}{y} : \frac{u}{v} = \frac{x}{y} \cdot \frac{v}{u} = \frac{xv}{yu}$
+! * Riêng công thức (4) cần thêm điều kiện $u \neq 0$.
+
+## 6. Định lý Vi-ét & nghiệm {olive}
+Cho phương trình $ax^2 + bx + c = 0 \ (a \neq 0)$. Gọi $\alpha$ và $\beta$ là 2 nghiệm của phương trình:
+> $\alpha + \beta = -\frac{b}{a} \qquad \alpha\beta = \frac{c}{a}$
+
+## 7. Dãy số (cấp số) {maroon}
+### Cấp số cộng (A.P.)
+Dãy số: $a,\ a+d,\ a+2d,\ \ldots$
+$$a_n = a + (n-1)d$$
+$$S_n = \frac{n}{2}\left[2a + (n-1)d\right]$$
+### Cấp số nhân (G.P.)
+Dãy số: $a,\ ar,\ ar^2,\ \ldots$
+$$a_n = a r^{n-1}$$
+$$S_n = \frac{a(r^n - 1)}{r - 1} \quad (r \neq 1)$$
+
+## 8. Các công thức khác {hồng}
+1. $(x+a)(x+b) = x^2 + (a+b)x + ab$
+2. $(ax+b)(cx+d) = acx^2 + (ad+bc)x + bd$
+3. $|a+b| \le |a| + |b|$
+4. $\sqrt{ab} = \sqrt{a} \cdot \sqrt{b} \quad (a \ge 0,\ b \ge 0)$
+5. $\sqrt{\frac{a}{b}} = \frac{\sqrt{a}}{\sqrt{b}} \quad (a \ge 0,\ b > 0)$
+
+## Ghi chú hoàn thiện {note}
+- **Thứ tự thực hiện phép tính:** Ngoặc → Lũy thừa → Nhân/Chia → Cộng/Trừ.
+- **Cảnh báo:** Luôn kiểm tra lại điều kiện xác định trước khi chốt đáp án cuối cùng.
+
+# Hàm số bậc hai – Dấu tam thức
+## 1. Hàm số bậc hai {xanhduong}
+1. $y = ax^2 + bx + c \quad (a \neq 0),\ \Delta = b^2 - 4ac$
+2. Đỉnh $I\left(-\frac{b}{2a}; -\frac{\Delta}{4a}\right)$
+3. Trục đối xứng: $x = -\frac{b}{2a}$
+4. $a > 0$: bề lõm hướng lên, $y_{\min} = -\frac{\Delta}{4a}$
+5. $a < 0$: bề lõm hướng xuống, $y_{\max} = -\frac{\Delta}{4a}$
+
+## 2. Sự biến thiên {cam}
+### Khi a > 0
+Nghịch biến trên $\left(-\infty; -\frac{b}{2a}\right)$, đồng biến trên $\left(-\frac{b}{2a}; +\infty\right)$
+### Khi a < 0
+Đồng biến trên $\left(-\infty; -\frac{b}{2a}\right)$, nghịch biến trên $\left(-\frac{b}{2a}; +\infty\right)$
+
+## 3. Dấu tam thức bậc hai {xanhla}
+Với $f(x) = ax^2 + bx + c \ (a \neq 0)$:
+1. $\Delta < 0$: $f(x)$ cùng dấu $a$ với mọi $x \in \mathbb{R}$
+2. $\Delta = 0$: $f(x)$ cùng dấu $a$ với mọi $x \neq -\frac{b}{2a}$
+3. $\Delta > 0$: $f(x)$ trái dấu $a$ khi $x_1 < x < x_2$, cùng dấu $a$ khi $x < x_1$ hoặc $x > x_2$
+! Nhớ nhanh: “trong trái, ngoài cùng”.
+
+## 4. Tam thức luôn dương, luôn âm {dohong}
+1. $ax^2 + bx + c > 0,\ \forall x \iff a > 0,\ \Delta < 0$
+2. $ax^2 + bx + c \ge 0,\ \forall x \iff a > 0,\ \Delta \le 0$
+3. $ax^2 + bx + c < 0,\ \forall x \iff a < 0,\ \Delta < 0$
+4. $ax^2 + bx + c \le 0,\ \forall x \iff a < 0,\ \Delta \le 0$
+! Khi hệ số $a$ chứa tham số, xét riêng trường hợp $a = 0$.
+
+## 5. Phương trình bậc hai {tim}
+1. $x_{1,2} = \frac{-b \pm \sqrt{\Delta}}{2a}$; với $b = 2b'$: $x_{1,2} = \frac{-b' \pm \sqrt{\Delta'}}{a}$, $\Delta' = b'^2 - ac$
+2. $S = x_1 + x_2 = -\frac{b}{a}, \quad P = x_1 x_2 = \frac{c}{a}$
+3. Hai nghiệm trái dấu $\iff ac < 0$
+4. Hai nghiệm dương phân biệt $\iff \Delta > 0,\ S > 0,\ P > 0$
+5. Hai nghiệm âm phân biệt $\iff \Delta > 0,\ S < 0,\ P > 0$
+
+## 6. Phương trình chứa căn {xanhreu}
+1. $\sqrt{f(x)} = \sqrt{g(x)} \iff f(x) = g(x),\ g(x) \ge 0$
+2. $\sqrt{f(x)} = g(x) \iff g(x) \ge 0,\ f(x) = g^2(x)$
+
+## Ghi chú {note}
+- **Vẽ parabol:** đỉnh → trục đối xứng → giao điểm với $Oy$ là $(0; c)$ → giao điểm với $Ox$ (nếu có).
+- **Bất phương trình bậc hai:** tìm nghiệm, xét dấu theo $a$ rồi chọn khoảng thỏa mãn.
+
+# Hệ thức lượng trong tam giác
+## 1. Giá trị lượng giác từ 0° đến 180° {cam}
+1. $\sin(180^\circ - \alpha) = \sin\alpha$
+2. $\cos(180^\circ - \alpha) = -\cos\alpha$
+3. $\tan(180^\circ - \alpha) = -\tan\alpha \quad (\alpha \neq 90^\circ)$
+4. $\sin(90^\circ - \alpha) = \cos\alpha,\ \cos(90^\circ - \alpha) = \sin\alpha$
+5. $\sin^2\alpha + \cos^2\alpha = 1$
+
+## 2. Định lí côsin {do}
+1. $a^2 = b^2 + c^2 - 2bc\cos A$
+2. $b^2 = a^2 + c^2 - 2ac\cos B$
+3. $c^2 = a^2 + b^2 - 2ab\cos C$
+4. $\cos A = \frac{b^2 + c^2 - a^2}{2bc}$
+
+## 3. Định lí sin {xanhduong}
+> $\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R$
+1. $a = 2R\sin A,\ b = 2R\sin B,\ c = 2R\sin C$
+! $R$ là bán kính đường tròn ngoại tiếp tam giác.
+
+## 4. Diện tích tam giác {xanhla}
+1. $S = \frac{1}{2} a h_a$
+2. $S = \frac{1}{2} bc\sin A = \frac{1}{2} ca\sin B = \frac{1}{2} ab\sin C$
+3. $S = \frac{abc}{4R}$
+4. $S = pr \quad \left(p = \frac{a + b + c}{2}\right)$
+5. $S = \sqrt{p(p-a)(p-b)(p-c)}$ (Heron)
+
+## 5. Độ dài đường trung tuyến {tim}
+1. $m_a^2 = \frac{2(b^2 + c^2) - a^2}{4}$
+2. $m_b^2 = \frac{2(a^2 + c^2) - b^2}{4}$
+
+## 6. Giải tam giác {xanhreu}
+- Biết 3 cạnh: dùng định lí côsin tìm các góc.
+- Biết 2 cạnh và góc xen giữa: định lí côsin tìm cạnh thứ ba.
+- Biết 1 cạnh và 2 góc: $A + B + C = 180^\circ$, rồi dùng định lí sin.
+
+## Ghi chú {note}
+- Góc tù thì côsin âm; cạnh lớn nhất đối diện góc lớn nhất.
+- $a^2 > b^2 + c^2 \iff A$ tù; $a^2 = b^2 + c^2 \iff A = 90^\circ$.
+
+# Vectơ – Tọa độ trong mặt phẳng
+## 1. Vectơ {xanhduong}
+1. Ba điểm: $\overrightarrow{AB} + \overrightarrow{BC} = \overrightarrow{AC}$
+2. Hiệu: $\overrightarrow{OB} - \overrightarrow{OA} = \overrightarrow{AB}$
+3. Hình bình hành $ABCD$: $\overrightarrow{AB} + \overrightarrow{AD} = \overrightarrow{AC}$
+4. $I$ trung điểm $AB$: $\overrightarrow{MA} + \overrightarrow{MB} = 2\overrightarrow{MI}$
+5. $G$ trọng tâm: $\overrightarrow{GA} + \overrightarrow{GB} + \overrightarrow{GC} = \vec{0}$
+
+## 2. Tích vô hướng {do}
+1. $\vec{a} \cdot \vec{b} = |\vec{a}| \cdot |\vec{b}| \cos(\vec{a}, \vec{b})$
+2. $\vec{a} \perp \vec{b} \iff \vec{a} \cdot \vec{b} = 0$
+3. $\vec{a}^2 = |\vec{a}|^2$
+
+## 3. Tọa độ vectơ {xanhla}
+Với $\vec{a} = (a_1; a_2),\ \vec{b} = (b_1; b_2)$:
+1. $\vec{a} \pm \vec{b} = (a_1 \pm b_1; a_2 \pm b_2),\ k\vec{a} = (ka_1; ka_2)$
+2. $\vec{a} \cdot \vec{b} = a_1 b_1 + a_2 b_2$
+3. $|\vec{a}| = \sqrt{a_1^2 + a_2^2}$
+4. $\cos(\vec{a}, \vec{b}) = \frac{a_1 b_1 + a_2 b_2}{\sqrt{a_1^2 + a_2^2} \cdot \sqrt{b_1^2 + b_2^2}}$
+5. $\vec{a}, \vec{b}$ cùng phương $\iff a_1 b_2 - a_2 b_1 = 0$
+
+## 4. Tọa độ điểm {cam}
+1. $\overrightarrow{AB} = (x_B - x_A; y_B - y_A)$
+2. $AB = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}$
+3. Trung điểm: $I\left(\frac{x_A + x_B}{2}; \frac{y_A + y_B}{2}\right)$
+4. Trọng tâm: $G\left(\frac{x_A + x_B + x_C}{3}; \frac{y_A + y_B + y_C}{3}\right)$
+
+## 5. Đường thẳng {tim}
+1. Tổng quát: $ax + by + c = 0$, vectơ pháp tuyến $\vec{n} = (a; b)$
+2. Tham số: $\begin{cases} x = x_0 + u_1 t \\ y = y_0 + u_2 t \end{cases}$, chỉ phương $\vec{u} = (u_1; u_2)$
+3. $d(M, \Delta) = \frac{|a x_0 + b y_0 + c|}{\sqrt{a^2 + b^2}}$
+4. $\cos(\Delta_1, \Delta_2) = \frac{|\vec{n_1} \cdot \vec{n_2}|}{|\vec{n_1}| \cdot |\vec{n_2}|}$
+
+## 6. Đường tròn – Elip {dohong}
+1. $(x - a)^2 + (y - b)^2 = R^2$: tâm $I(a; b)$, bán kính $R$
+2. $x^2 + y^2 - 2ax - 2by + c = 0$, $R = \sqrt{a^2 + b^2 - c}$ $(a^2 + b^2 - c > 0)$
+3. Tiếp tuyến tại $M_0$: $(x_0 - a)(x - x_0) + (y_0 - b)(y - y_0) = 0$
+4. Elip: $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \ (a > b > 0),\ c^2 = a^2 - b^2$
+
+# Đại số tổ hợp – Xác suất
+## 1. Quy tắc đếm {cam}
+1. Quy tắc cộng: hai phương án có $m$ và $n$ cách ⇒ $m + n$ cách
+2. Quy tắc nhân: hai công đoạn có $m$ và $n$ cách ⇒ $m \cdot n$ cách
+
+## 2. Hoán vị – Chỉnh hợp – Tổ hợp {do}
+1. $P_n = n! = 1 \cdot 2 \cdots n$, quy ước $0! = 1$
+2. $A_n^k = \frac{n!}{(n-k)!} \quad (1 \le k \le n)$
+3. $C_n^k = \frac{n!}{k!(n-k)!} \quad (0 \le k \le n)$
+4. $C_n^k = C_n^{n-k}$
+5. $C_n^k + C_n^{k+1} = C_{n+1}^{k+1}$
+! Chỉnh hợp có phân biệt thứ tự; tổ hợp không phân biệt thứ tự.
+
+## 3. Nhị thức Newton {xanhduong}
+1. $(a+b)^4 = a^4 + 4a^3b + 6a^2b^2 + 4ab^3 + b^4$
+2. $(a+b)^5 = a^5 + 5a^4b + 10a^3b^2 + 10a^2b^3 + 5ab^4 + b^5$
+3. $(a+b)^n = \sum_{k=0}^{n} C_n^k a^{n-k} b^k$
+4. Số hạng tổng quát: $T_{k+1} = C_n^k a^{n-k} b^k$
+
+## 4. Xác suất cổ điển {xanhla}
+1. $P(A) = \frac{n(A)}{n(\Omega)}$
+2. $0 \le P(A) \le 1,\ P(\Omega) = 1,\ P(\varnothing) = 0$
+3. $P(\overline{A}) = 1 - P(A)$
+
+## 5. Quy tắc tính xác suất {tim}
+1. $A, B$ xung khắc: $P(A \cup B) = P(A) + P(B)$
+2. Công thức cộng: $P(A \cup B) = P(A) + P(B) - P(AB)$
+3. $A, B$ độc lập: $P(AB) = P(A) \cdot P(B)$
+
+## Ghi chú {note}
+- **“Ít nhất một”:** tính qua biến cố đối $P(A) = 1 - P(\overline{A})$.
+- Đếm có điều kiện: ưu tiên vị trí hoặc phần tử bị ràng buộc trước.
+
+# Công thức Lượng giác
+## 1. Đơn vị & giá trị đặc biệt {xanhreu}
+1. $180^\circ = \pi$ rad; độ dài cung $l = R\alpha$ ($\alpha$ tính bằng rad)
+2. $\sin\frac{\pi}{6} = \frac{1}{2},\ \sin\frac{\pi}{4} = \frac{\sqrt{2}}{2},\ \sin\frac{\pi}{3} = \frac{\sqrt{3}}{2}$
+3. $\tan\frac{\pi}{6} = \frac{\sqrt{3}}{3},\ \tan\frac{\pi}{4} = 1,\ \tan\frac{\pi}{3} = \sqrt{3}$
+
+## 2. Hệ thức cơ bản {xanhduong}
+1. $\sin^2 x + \cos^2 x = 1$
+2. $\tan x \cdot \cot x = 1$
+3. $1 + \tan^2 x = \frac{1}{\cos^2 x}$
+4. $1 + \cot^2 x = \frac{1}{\sin^2 x}$
+
+## 3. Giá trị lượng giác của các góc liên quan {hong}
+1. $\cos(-x) = \cos x,\ \sin(-x) = -\sin x$
+2. $\sin(\pi - x) = \sin x,\ \cos(\pi - x) = -\cos x$
+3. $\sin\left(\frac{\pi}{2} - x\right) = \cos x,\ \cos\left(\frac{\pi}{2} - x\right) = \sin x$
+4. $\tan(\pi + x) = \tan x,\ \sin(\pi + x) = -\sin x$
+! Nhớ nhanh: “cos đối, sin bù, phụ chéo, hơn kém $\pi$ tang côtang”.
+
+## 4. Công thức cộng {cam}
+1. $\cos(a \pm b) = \cos a\cos b \mp \sin a\sin b$
+2. $\sin(a \pm b) = \sin a\cos b \pm \cos a\sin b$
+3. $\tan(a \pm b) = \frac{\tan a \pm \tan b}{1 \mp \tan a\tan b}$
+
+## 5. Nhân đôi – Hạ bậc {do}
+1. $\sin 2a = 2\sin a\cos a$
+2. $\cos 2a = \cos^2 a - \sin^2 a = 2\cos^2 a - 1 = 1 - 2\sin^2 a$
+3. $\tan 2a = \frac{2\tan a}{1 - \tan^2 a}$
+4. $\cos^2 a = \frac{1 + \cos 2a}{2},\ \sin^2 a = \frac{1 - \cos 2a}{2}$
+
+## 6. Biến đổi tích thành tổng {tim}
+1. $\cos a\cos b = \frac{1}{2}[\cos(a-b) + \cos(a+b)]$
+2. $\sin a\sin b = \frac{1}{2}[\cos(a-b) - \cos(a+b)]$
+3. $\sin a\cos b = \frac{1}{2}[\sin(a-b) + \sin(a+b)]$
+
+## 7. Biến đổi tổng thành tích {vangreu}
+1. $\cos a + \cos b = 2\cos\frac{a+b}{2}\cos\frac{a-b}{2}$
+2. $\cos a - \cos b = -2\sin\frac{a+b}{2}\sin\frac{a-b}{2}$
+3. $\sin a + \sin b = 2\sin\frac{a+b}{2}\cos\frac{a-b}{2}$
+4. $\sin a - \sin b = 2\cos\frac{a+b}{2}\sin\frac{a-b}{2}$
+
+## 8. Phương trình lượng giác cơ bản {xanhla, full}
+$$\sin x = \sin\alpha \iff x = \alpha + k2\pi \ \text{hoặc}\ x = \pi - \alpha + k2\pi \qquad \cos x = \cos\alpha \iff x = \pm\alpha + k2\pi$$
+$$\tan x = \tan\alpha \iff x = \alpha + k\pi \qquad \cot x = \cot\alpha \iff x = \alpha + k\pi \qquad (k \in \mathbb{Z})$$
+! $\sin x = m$ và $\cos x = m$ chỉ có nghiệm khi $|m| \le 1$.
+
+# Dãy số – Cấp số – Giới hạn
+## 1. Cấp số cộng {cam}
+1. $u_{n+1} = u_n + d$
+2. $u_n = u_1 + (n-1)d$
+3. $S_n = \frac{n(u_1 + u_n)}{2} = \frac{n}{2}[2u_1 + (n-1)d]$
+4. $u_k = \frac{u_{k-1} + u_{k+1}}{2} \quad (k \ge 2)$
+
+## 2. Cấp số nhân {xanhduong}
+1. $u_{n+1} = u_n \cdot q$
+2. $u_n = u_1 q^{n-1}$
+3. $S_n = \frac{u_1(1 - q^n)}{1 - q} \quad (q \neq 1)$
+4. $u_k^2 = u_{k-1} \cdot u_{k+1} \quad (k \ge 2)$
+
+## 3. Giới hạn dãy số {do}
+1. $\lim \frac{1}{n^k} = 0 \quad (k \in \mathbb{N}^*)$
+2. $\lim q^n = 0$ khi $|q| < 1$; $\lim c = c$
+3. Cấp số nhân lùi vô hạn: $S = \frac{u_1}{1 - q} \quad (|q| < 1)$
+
+## 4. Giới hạn hàm số {xanhla}
+1. $\lim_{x \to x_0} c = c,\ \lim_{x \to x_0} x = x_0$
+2. $\lim_{x \to \pm\infty} \frac{c}{x^k} = 0 \quad (k \in \mathbb{N}^*)$
+3. $\lim_{x \to 0^+} \frac{1}{x} = +\infty,\ \lim_{x \to 0^-} \frac{1}{x} = -\infty$
+4. $\lim_{x \to x_0} f(x) = L \iff \lim_{x \to x_0^+} f(x) = \lim_{x \to x_0^-} f(x) = L$
+
+## 5. Hàm số liên tục {tim}
+1. $f$ liên tục tại $x_0 \iff \lim_{x \to x_0} f(x) = f(x_0)$
+2. $f$ liên tục trên $[a; b]$, $f(a) \cdot f(b) < 0$ ⇒ phương trình $f(x) = 0$ có nghiệm trong $(a; b)$
+
+## Ghi chú {note}
+- Dạng $\frac{0}{0}$: phân tích nhân tử hoặc nhân liên hợp; dạng $\frac{\infty}{\infty}$: chia cho lũy thừa bậc cao nhất.
+
+# Hàm số mũ – Logarit
+## 1. Lũy thừa {do}
+1. $a^{\frac{m}{n}} = \sqrt[n]{a^m} \quad (a > 0)$
+2. $a^\alpha \cdot a^\beta = a^{\alpha + \beta},\ \frac{a^\alpha}{a^\beta} = a^{\alpha - \beta}$
+3. $(a^\alpha)^\beta = a^{\alpha\beta},\ (ab)^\alpha = a^\alpha b^\alpha$
+
+## 2. Logarit {xanhduong}
+Điều kiện: $0 < a \neq 1,\ b > 0,\ c > 0$
+1. $\log_a b = \alpha \iff a^\alpha = b$
+2. $\log_a 1 = 0,\ \log_a a = 1,\ a^{\log_a b} = b$
+3. $\log_a (bc) = \log_a b + \log_a c$
+4. $\log_a \frac{b}{c} = \log_a b - \log_a c$
+5. $\log_a b^\alpha = \alpha\log_a b$
+6. $\log_a b = \frac{\log_c b}{\log_c a} \quad (0 < c \neq 1)$
+7. $\log_{a^\alpha} b = \frac{1}{\alpha}\log_a b \quad (\alpha \neq 0)$
+! $\lg b = \log_{10} b$, $\ln b = \log_e b$.
+
+## 3. Hàm số mũ, logarit {xanhla}
+1. $y = a^x$: tập xác định $\mathbb{R}$, tập giá trị $(0; +\infty)$
+2. $y = \log_a x$: tập xác định $(0; +\infty)$, tập giá trị $\mathbb{R}$
+3. $a > 1$: đồng biến; $0 < a < 1$: nghịch biến
+
+## 4. Phương trình {cam}
+1. $a^x = b \ (b > 0) \iff x = \log_a b$
+2. $a^{f(x)} = a^{g(x)} \iff f(x) = g(x)$
+3. $\log_a x = b \iff x = a^b$
+4. $\log_a f(x) = \log_a g(x) \iff f(x) = g(x) > 0$
+
+## 5. Bất phương trình {tim}
+1. $a > 1$: $a^{f(x)} > a^{g(x)} \iff f(x) > g(x)$
+2. $0 < a < 1$: $a^{f(x)} > a^{g(x)} \iff f(x) < g(x)$
+3. $a > 1$: $\log_a f(x) > \log_a g(x) \iff f(x) > g(x) > 0$
+4. $0 < a < 1$: $\log_a f(x) > \log_a g(x) \iff 0 < f(x) < g(x)$
+
+## Ghi chú {note}
+- **Lãi kép:** $T = A(1 + r)^n$ ($A$ vốn, $r$ lãi suất mỗi kì, $n$ số kì).
+
+# Đạo hàm
+## 1. Định nghĩa và ý nghĩa {xanhreu}
+1. $f'(x_0) = \lim_{x \to x_0} \frac{f(x) - f(x_0)}{x - x_0}$
+2. Tiếp tuyến tại $M(x_0; y_0)$: $y = f'(x_0)(x - x_0) + y_0$
+3. Vận tốc $v(t) = s'(t)$, gia tốc $a(t) = v'(t) = s''(t)$
+
+## 2. Đạo hàm cơ bản {do}
+1. $(c)' = 0,\ (x)' = 1,\ (x^n)' = n x^{n-1}$
+2. $(\sqrt{x})' = \frac{1}{2\sqrt{x}},\ \left(\frac{1}{x}\right)' = -\frac{1}{x^2}$
+3. $(\sin x)' = \cos x,\ (\cos x)' = -\sin x$
+4. $(\tan x)' = \frac{1}{\cos^2 x},\ (\cot x)' = -\frac{1}{\sin^2 x}$
+5. $(e^x)' = e^x,\ (a^x)' = a^x \ln a$
+6. $(\ln x)' = \frac{1}{x},\ (\log_a x)' = \frac{1}{x \ln a}$
+
+## 3. Quy tắc tính {cam}
+1. $(u \pm v)' = u' \pm v',\ (ku)' = ku'$
+2. $(uv)' = u'v + uv'$
+3. $\left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2}$
+4. Hàm hợp: $y'_x = y'_u \cdot u'_x$
+
+## 4. Đạo hàm hàm hợp {xanhduong}
+1. $(u^n)' = n u^{n-1} u'$
+2. $(\sqrt{u})' = \frac{u'}{2\sqrt{u}}$
+3. $(\sin u)' = u'\cos u,\ (\cos u)' = -u'\sin u$
+4. $(e^u)' = u' e^u,\ (\ln u)' = \frac{u'}{u}$
+
+## Ghi chú {note}
+- Hệ số góc tiếp tuyến tại $x_0$ là $k = f'(x_0)$; tiếp tuyến song song $y = ax + b$ ⇒ $f'(x_0) = a$.
+</script>
+
+<script type="text/plain" id="sampleJson">{
+  "title": "Công thức Lượng giác",
+  "paper": "a4",
+  "columns": 2,
+  "sections": [
+    {
+      "title": "1. Hệ thức cơ bản",
+      "color": "xanhduong",
+      "items": [
+        "$\\sin^2 x + \\cos^2 x = 1$",
+        "$\\tan x = \\frac{\\sin x}{\\cos x} \\quad \\left(x \\neq \\frac{\\pi}{2} + k\\pi\\right)$",
+        "$1 + \\tan^2 x = \\frac{1}{\\cos^2 x}$",
+        "$\\tan x \\cdot \\cot x = 1$"
+      ]
+    },
+    {
+      "title": "2. Công thức cộng",
+      "color": "cam",
+      "items": [
+        "$\\cos(a \\pm b) = \\cos a\\cos b \\mp \\sin a\\sin b$",
+        "$\\sin(a \\pm b) = \\sin a\\cos b \\pm \\cos a\\sin b$",
+        "$\\tan(a+b) = \\frac{\\tan a + \\tan b}{1 - \\tan a\\tan b}$"
+      ]
+    },
+    {
+      "title": "3. Phương trình cơ bản",
+      "color": "do",
+      "numbered": false,
+      "items": [
+        {"type": "heading", "text": "Phương trình sin x = m"},
+        {"type": "center", "text": "$$\\sin x = \\sin\\alpha \\iff x = \\alpha + k2\\pi \\ \\text{hoặc}\\ x = \\pi - \\alpha + k2\\pi$$"},
+        {"type": "heading", "text": "Phương trình cos x = m"},
+        {"type": "center", "text": "$$\\cos x = \\cos\\alpha \\iff x = \\pm\\alpha + k2\\pi$$"},
+        {"type": "note", "text": "Điều kiện có nghiệm: $|m| \\le 1$."}
+      ]
+    },
+    {
+      "title": "4. Công thức nhân đôi",
+      "color": "xanhreu",
+      "items": [
+        "$\\sin 2a = 2\\sin a\\cos a$",
+        "$\\cos 2a = \\cos^2 a - \\sin^2 a = 2\\cos^2 a - 1$",
+        "$\\tan 2a = \\frac{2\\tan a}{1 - \\tan^2 a}$"
+      ]
+    }
+  ],
+  "footer": {
+    "title": "Ghi nhớ",
+    "items": ["**Đổi đơn vị:** $180^\\circ = \\pi$ rad.", "Luôn đặt điều kiện trước khi giải."]
+  }
+}</script>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']], processEscapes: false },
+  svg: { fontCache: 'local' },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const PALETTE = {
+  do: "#C0222E", cam: "#D46A1C", xanhla: "#46B83A", xanhduong: "#1414C4", xanhreu: "#2E5D63",
+  vangreu: "#8A8327", dohong: "#8E1A36", hong: "#BC437A", tim: "#5B2C83", nau: "#7A4A1E", xam: "#555555"
+};
+const ALIAS = { "red":"do","đỏ":"do","orange":"cam","green":"xanhla","xanh lá":"xanhla","blue":"xanhduong",
+  "xanh dương":"xanhduong","teal":"xanhreu","olive":"vangreu","maroon":"dohong","crimson":"dohong",
+  "pink":"hong","hồng":"hong","purple":"tim","tím":"tim","brown":"nau","nâu":"nau","gray":"xam","grey":"xam","xám":"xam" };
+const CYCLE = ["do","cam","xanhla","xanhduong","xanhreu","vangreu","dohong","hong"];
+const TYPES = ["item","heading","center","box","note","text","bullet"];
+
+/* ---------- toast & thông báo ---------- */
+let tt;
+function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove("show"),2200); }
+function showMsgs(list){
+  const box=$("msgs"); box.innerHTML="";
+  list.forEach(([k,t])=>{ const d=document.createElement("div"); d.className="msg "+k;
+    const lab={ok:"Ổn",warn:"Lưu ý",err:"Lỗi"}[k]; d.innerHTML=`<strong>${lab}:</strong> <span></span>`; d.querySelector("span").textContent=t; box.appendChild(d); });
+}
+
+/* ---------- thông tin chân trang ---------- */
+const META={tacgia:"author",author:"author",giaovien:"author",biensoan:"author",truong:"school",school:"school",donvi:"school",
+  thongtin:"info",info:"info",lop:"info",ngay:"date",date:"date",sotrang:"page_numbers",pagenumbers:"page_numbers",danhsotrang:"page_numbers",
+  tietkiem:"eco",sieutietkiem:"eco",intietkiem:"eco",eco:"eco",mucluc:"toc",toc:"toc",tenbo:"set_title",bo:"set_title",collection:"set_title",settitle:"set_title"};
+function normKey(k){ return String(k).replace(/đ/g,"d").replace(/Đ/g,"D").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[\s_\-]+/g,""); }
+function isOff(v){ return /^(no|false|khong|không|0|tat|tắt|off)$/i.test(String(v).trim()); }
+function today(){ const d=new Date(); return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear(); }
+function fixDate(v){ if(!v) return ""; return /^(auto|hôm nay|hom nay|today)$/i.test(String(v).trim()) ? today() : String(v).trim(); }
+const MF={author:"mAuthor",school:"mSchool",info:"mInfo",date:"mDate"};
+function getMeta(){ const m={}; Object.entries(MF).forEach(([k,id])=>m[k]=$(id).value.trim()); m.page_numbers=$("mPN").checked; m.eco=$("mEco").checked; m.toc=$("mToc").checked; return m; }
+function saveMeta(){ try{localStorage.setItem("xtct-meta",JSON.stringify(getMeta()));}catch{} }
+function loadMeta(){ let m=null; try{m=JSON.parse(localStorage.getItem("xtct-meta")||"null");}catch{} if(m){ Object.entries(MF).forEach(([k,id])=>{ if(m[k]) $(id).value=m[k]; }); $("mPN").checked=m.page_numbers!==false; $("mEco").checked=!!m.eco; $("mToc").checked=m.toc!==false; } }
+// file có ghi thông tin thì đưa lên ô; sau đó ô là nơi chỉnh, kết quả .md/.json lấy theo ô
+function syncMeta(doc){ Object.entries(MF).forEach(([k,id])=>{ if(doc[k]) $(id).value=doc[k]; }); if(typeof doc.page_numbers==="boolean") $("mPN").checked=doc.page_numbers; if(typeof doc.eco==="boolean") $("mEco").checked=doc.eco; if(typeof doc.toc==="boolean") $("mToc").checked=doc.toc; saveMeta(); }
+function withMeta(doc){ const m=getMeta(); return Object.assign({},doc,m); }
+function footerInfo(m){ return [m.author&&("Biên soạn: "+m.author),m.school,m.info,fixDate(m.date)].filter(Boolean); }
+
+/* ---------- nhận dạng & đọc ---------- */
+function detect(text){ const t=text.trim(); return (t.startsWith("{")||t.startsWith("[")) ? "json" : (t ? "md" : ""); }
+
+// Nhân đôi dấu \ đơn trước lệnh LaTeX (AI hay quên trong JSON). \frac hợp lệ JSON nhưng thành ký tự \f!
+function fixBackslashes(raw){
+  let n=0;
+  const out=raw.replace(/(\\+)([A-Za-z]{2,}|[{}|,;!% ]|[A-Za-z](?![A-Za-z]))/g,(m,bs,cmd,off,str)=>{
+    if(bs.length%2===0) return m;                 // đã đúng (\\)
+    if(/^u[0-9a-fA-F]{4}/.test(str.slice(off+bs.length))) return m; // \uXXXX
+    if(cmd.length===1 && /[nt"\/]/.test(cmd)) return m;               // \n \t \" \/ thật
+    n++; return bs+"\\"+cmd;
+  });
+  return {text:out,count:n};
+}
+
+/* ---- mô hình: doc = {paper, columns, fit, eco, toc, set_title, author…, sheets:[{title, subtitle, columns, sections}]} ---- */
+const GKEY={paper:"paper",kho:"paper",columns:"columns",cot:"columns",fit:"fit",vuatrang:"fit",subtitle:"subtitle",phude:"subtitle"};
+const SHEET_KEYS={cot:"columns",columns:"columns",phude:"subtitle",subtitle:"subtitle"};
+const BOOLS=["page_numbers","eco","toc","fit"];
+function newDoc(){ return {paper:"a4",columns:null,fit:true,sheets:[]}; }
+function setGlobal(doc,k,v){
+  const f=META[k]||GKEY[k]; if(!f) return false;
+  if(BOOLS.includes(f)) doc[f]= typeof v==="boolean"?v:!isOff(v);
+  else if(f==="columns") doc.columns=parseInt(v)||null;
+  else if(f==="paper") doc.paper=String(v).toLowerCase().trim();
+  else doc[f]=String(v);
+  return true;
+}
+function parseSections(d,warns){
+  const secs=[];
+  (d.sections||[]).forEach(s=>{
+    const numbered=s.numbered!==false; let n=0; const items=[];
+    (s.items||[]).forEach(it=>{
+      if(typeof it==="string"){ if(numbered){n++; items.push({type:"item",n,text:it});} else items.push({type:"text",text:it}); }
+      else if(it&&typeof it==="object"){
+        const o={type:it.type||"item",text:String(it.text??"")};
+        if(!TYPES.includes(o.type)){ warns.push(["warn",`Kiểu “${o.type}” trong khối “${s.title}” không có, đã đổi thành đoạn văn.`]); o.type="text"; }
+        if(o.type==="item"){ n=it.n?+it.n:n+1; o.n=n; }
+        items.push(o);
+      }
+    });
+    secs.push({title:s.title||"",color:s.color||null,col:s.col||null,full:!!s.full,style:s.style==="ghichu"?"ghichu":"khoi",items});
+  });
+  if(d.footer){
+    const its=(d.footer.items||[]).map(it=>typeof it==="string"?{type:"bullet",text:it}:{type:it.type||"bullet",text:String(it.text??"")});
+    secs.push({title:d.footer.title||"Ghi chú",style:"ghichu",full:true,color:null,col:null,items:its});
+  }
+  return secs;
+}
+
+function parseJSONText(text){
+  const warns=[];
+  const fx=fixBackslashes(text);
+  if(fx.count) warns.push(["warn",`Đã tự nhân đôi ${fx.count} dấu \\ đơn trước lệnh LaTeX (JSON cần \\\\frac, không phải \\frac).`]);
+  let d;
+  try{ d=JSON.parse(fx.text); }
+  catch(e){
+    const m=/position (\d+)/.exec(e.message); let where="";
+    if(m){ const p=+m[1]; const line=fx.text.slice(0,p).split("\n").length; where=` (khoảng dòng ${line})`; }
+    throw new Error("JSON không hợp lệ"+where+": "+e.message);
+  }
+  if(Array.isArray(d)) d={sections:d};
+  const doc=newDoc();
+  Object.entries(d).forEach(([k,v])=>{ if(!["sections","pages","sheets","footer","title","subtitle"].includes(k)) setGlobal(doc,normKey(k),v); });
+  const pages=d.pages||d.sheets;
+  if(Array.isArray(pages)&&pages.length){
+    doc.set_title=doc.set_title||d.title||"";
+    pages.forEach(pg=>doc.sheets.push({title:pg.title||"",subtitle:pg.subtitle||"",columns:pg.columns?+pg.columns:null,sections:parseSections(pg,warns)}));
+  } else {
+    doc.sheets.push({title:d.title||"",subtitle:d.subtitle||"",columns:null,sections:parseSections(d,warns)});
+  }
+  return {doc,warns};
+}
+
+const AT_SPLIT=/\s+(?=@[^@:\s][^@:]{0,24}:)/;   // "@a: x @b: y" bị viết dính một dòng
+function parseMDText(text){
+  const doc=newDoc(), warns=[];
+  let sheet=null, cur=null, n=0; const lines=text.replace(/\r/g,"").split("\n");
+  const ensureSheet=()=>{ if(!sheet){ sheet={title:"",subtitle:"",columns:null,sections:[]}; doc.sheets.push(sheet);} return sheet; };
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i].trim(); if(!line||line.startsWith("<"+"!--")) continue;
+    let m;
+    if(line.startsWith("@") && !cur){
+      line.split(AT_SPLIT).forEach(part=>{
+        const mm=/^@([^:]+?)\s*:\s*(.*)$/.exec(part.trim()); if(!mm) return;
+        const k=normKey(mm[1]), v=mm[2].trim();
+        if(sheet && SHEET_KEYS[k]){ const f=SHEET_KEYS[k]; sheet[f]= f==="columns"?(parseInt(v)||null):v; }
+        else if(!setGlobal(doc,k,v)) warns.push(["warn",`Không hiểu dòng “@${mm[1]}”, đã bỏ qua.`]);
+      });
+      continue;
+    }
+    if(/^#\s/.test(line)){ sheet={title:line.slice(2).trim(),subtitle:"",columns:null,sections:[]}; doc.sheets.push(sheet); cur=null; continue; }
+    if(/^##\s/.test(line)){
+      let head=line.slice(3).trim(), attrs="";
+      if((m=/\{([^}]*)\}\s*$/.exec(head))){ attrs=m[1]; head=head.slice(0,m.index).trim(); }
+      const sec={title:head,color:null,col:null,full:false,style:"khoi",items:[]};
+      attrs.split(",").map(a=>a.trim()).filter(Boolean).forEach(a=>{
+        const al=a.toLowerCase();
+        const ak=normKey(a);
+        if(["vidu","example","thuchanh","luyentap","practice","baitap"].includes(ak)){ sec.skip=true; return; }
+        if(/^\d+([.,]\d+)?\s*(phút|phut|ph|p|m|giây|giay|s)$/.test(al)) return;
+        if(["note","ghichu","footer"].includes(al)){sec.style="ghichu";sec.full=true;}
+        else if(["full","rong"].includes(al)) sec.full=true;
+        else if(/^(col|cot)=\d+$/.test(al)) sec.col=+al.split("=")[1];
+        else sec.color=a.split("=").pop();
+      });
+      ensureSheet().sections.push(sec); cur=sec; n=0; continue;
+    }
+    if(!cur){ warns.push(["warn",`Dòng ${i+1} nằm ngoài khối “##” nên bị bỏ qua.`]); continue; }
+    if(line.startsWith("$$") && !(line.endsWith("$$")&&line.length>4)){
+      const buf=[line.slice(2)];
+      while(i+1<lines.length && !lines[i+1].includes("$$")){ buf.push(lines[++i]); }
+      if(i+1<lines.length){ buf.push(lines[++i].split("$$")[0]); }
+      cur.items.push({type:"center",text:"$$"+buf.join(" ").trim()+"$$"}); continue;
+    }
+    if(/^###\s/.test(line)) cur.items.push({type:"heading",text:line.slice(4).trim()});
+    else if(line.startsWith("$$")&&line.endsWith("$$")) cur.items.push({type:"center",text:line});
+    else if(line.startsWith(">")) cur.items.push({type:"box",text:line.replace(/^>\s*/,"")});
+    else if(line.startsWith("!")) cur.items.push({type:"note",text:line.slice(1).trim()});
+    else if(/^[-*+]\s+/.test(line)) cur.items.push({type:"bullet",text:line.replace(/^[-*+]\s+/,"")});
+    else if((m=/^(\d+)[.)]\s+(.*)$/.exec(line))){ n=+m[1]; cur.items.push({type:"item",n,text:m[2]}); }
+    else cur.items.push({type:"text",text:line});
+  }
+  // ví dụ / thực hành (dành cho Bục Giảng) không in vào trang công thức
+  let skipped=0; doc.sheets.forEach(sh=>{ const n0=sh.sections.length; sh.sections=sh.sections.filter(s=>!s.skip); skipped+=n0-sh.sections.length; });
+  doc.sheets=doc.sheets.filter(sh=>sh.sections.length);
+  if(skipped) warns.push(["warn",`Bỏ qua ${skipped} khối ví dụ/thực hành — các khối này chỉ dùng khi trình chiếu bằng Bục Giảng Công Thức.`]);
+  // phụ đề ghi ở đầu file kiểu cũ: gắn cho trang đầu
+  if(doc.subtitle && doc.sheets[0] && !doc.sheets[0].subtitle) doc.sheets[0].subtitle=doc.subtitle;
+  delete doc.subtitle;
+  return {doc,warns};
+}
+
+function parseAny(text){
+  const k=detect(text);
+  if(!k) throw new Error("Ô nhập đang trống. Dán nội dung .md hoặc JSON, hoặc bấm “Mẫu .md”.");
+  const r=k==="json"?parseJSONText(text):parseMDText(text); r.kind=k; return r;
+}
+const nSec=doc=>doc.sheets.reduce((a,s)=>a+s.sections.length,0);
+const nItem=doc=>doc.sheets.reduce((a,s)=>a+s.sections.reduce((b,x)=>b+x.items.length,0),0);
+
+/* ---------- kiểm tra nội dung ---------- */
+function lint(doc){
+  const w=[];
+  if(!doc.sheets.length){ w.push(["err","Chưa có trang nào (# Tiêu đề rồi các khối ## Tên khối)."]); return w; }
+  const multi=doc.sheets.length>1;
+  doc.sheets.forEach((sh,si)=>{
+    const where=multi?`Trang ${si+1}${sh.title?" “"+sh.title+"”":""}: `:"";
+    if(!sh.title) w.push(["warn",where+"chưa có tiêu đề (# Tiêu đề hoặc \"title\")."]);
+    if(/@\S+\s*:/.test(sh.title||"")||/@\S+\s*:/.test(sh.subtitle||"")) w.push(["warn",where+"tiêu đề hoặc phụ đề còn dính dòng @…: hãy để mỗi dòng @ đứng riêng."]);
+    if(!sh.sections.length) w.push(["err",where+"chưa có khối nào (## Tên khối)."]);
+    sh.sections.forEach(s=>{
+      if(!s.items.length) w.push(["warn",where+`khối “${s.title}” chưa có dòng nào.`]);
+      const c=normColor(s.color); if(s.color && !c.known) w.push(["warn",where+`màu “${s.color}” của khối “${s.title}” không nhận ra, sẽ dùng màu mặc định.`]);
+      s.items.forEach(it=>{
+        const t=it.text||"";
+        const d=(t.match(/\$/g)||[]).length; if(d%2) w.push(["err",where+`thiếu dấu $ đóng: “${t.slice(0,60)}”`]);
+        if(/\\\[|\\\(/.test(t)) w.push(["warn",where+`dùng \\[ hoặc \\( — hãy đổi sang $...$: “${t.slice(0,50)}”`]);
+        let b=0; for(const ch of t.replace(/\\[{}]/g,"")){ if(ch==="{")b++; else if(ch==="}")b--; }
+        if(b!==0) w.push(["err",where+`ngoặc { } không cân: “${t.slice(0,60)}”`]);
+        if(/[\f\b]/.test(t)) w.push(["err",where+`có ký tự lạ (thường do \\f, \\b đơn trong JSON): “${t.slice(0,50)}”`]);
+      });
+    });
+  });
+  return w;
+}
+
+/* ---------- xuất ---------- */
+function normColor(c){
+  if(!c) return {key:null,known:true};
+  let k=String(c).trim().toLowerCase(); k=ALIAS[k]||k;
+  if(/^#?[0-9a-f]{6}$/.test(k)) return {key:"#"+k.replace("#",""),known:true,hex:"#"+k.replace("#","")};
+  if(PALETTE[k]) return {key:k,known:true,hex:PALETTE[k]};
+  return {key:null,known:false};
+}
+const one = s => String(s||"").replace(/\s*\n\s*/g," ").trim();
+
+function sectionsMD(L,sections){
+  sections.forEach(s=>{
+    L.push("");
+    const at=[];
+    if(s.style==="ghichu") at.push("note");
+    else{ const c=normColor(s.color); if(c.key) at.push(c.key); if(s.full) at.push("full"); if(s.col) at.push("col="+s.col); }
+    L.push("## "+one(s.title)+(at.length?` {${at.join(", ")}}`:""));
+    s.items.forEach(it=>{
+      const t=one(it.text);
+      switch(it.type){
+        case "item": L.push(`${it.n}. ${t}`); break;
+        case "heading": L.push("### "+t); break;
+        case "center": L.push(/^\$\$.*\$\$$/.test(t)?t:/^\$[^$].*\$$/.test(t)?"$"+t+"$":t); break;
+        case "box": L.push("> "+t); break;
+        case "note": L.push("! "+t); break;
+        case "bullet": L.push("- "+t); break;
+        default: L.push(/^(\d+[.)]\s|[-*+]\s|[>!#@]|\$\$)/.test(t)?"\u200B"+t:t);
+      }
+    });
+  });
+}
+function toMD(doc){
+  const L=[], multi=doc.sheets.length>1;
+  if(doc.set_title) L.push("@tên bộ: "+one(doc.set_title));
+  L.push("@khổ: "+(doc.paper||"a4"));
+  if(doc.columns) L.push("@cột: "+doc.columns);
+  if(doc.author) L.push("@tác giả: "+one(doc.author));
+  if(doc.school) L.push("@trường: "+one(doc.school));
+  if(doc.info) L.push("@thông tin: "+one(doc.info));
+  if(doc.date) L.push("@ngày: "+one(doc.date));
+  if(doc.page_numbers===false) L.push("@số trang: không");
+  if(doc.eco) L.push("@tiết kiệm: có");
+  if(multi && typeof doc.toc==="boolean") L.push("@mục lục: "+(doc.toc?"có":"không"));
+  if(doc.fit===false) L.push("@fit: no");
+  doc.sheets.forEach(sh=>{
+    L.push(""); L.push("# "+(one(sh.title)||"Trang công thức"));
+    if(sh.columns) L.push("@cột: "+sh.columns);
+    if(sh.subtitle) L.push("@phụ đề: "+one(sh.subtitle));
+    sectionsMD(L,sh.sections);
+  });
+  return L.join("\n")+"\n";
+}
+
+function sectionsJSON(sections){
+  const o={sections:[]};
+  sections.filter(s=>s.style!=="ghichu").forEach(s=>{
+    const x={title:s.title}; const c=normColor(s.color); if(c.key) x.color=c.key;
+    if(s.col) x.col=s.col; if(s.full) x.full=true;
+    let expect=1, seq=true;
+    s.items.forEach(it=>{ if(it.type==="item"){ if(it.n!==expect) seq=false; expect++; } });
+    const hasItem=s.items.some(it=>it.type==="item");
+    if(!hasItem) x.numbered=false;
+    x.items=s.items.map(it=>{
+      if(it.type==="item") return seq ? it.text : {type:"item",n:it.n,text:it.text};
+      if(it.type==="text" && !hasItem) return it.text;
+      return {type:it.type,text:it.text};
+    });
+    o.sections.push(x);
+  });
+  const notes=sections.filter(s=>s.style==="ghichu");
+  if(notes.length){
+    o.footer={title:notes[0].title,items:notes[0].items.map(it=>it.type==="bullet"?it.text:{type:it.type,text:it.text})};
+    notes.slice(1).forEach(s=>o.footer.items.push(...s.items.map(it=>({type:it.type,text:it.text}))));
+  }
+  return o;
+}
+function toJSON(doc){
+  const multi=doc.sheets.length>1 || !!doc.set_title;
+  const out={};
+  if(multi) out.title=doc.set_title||"Bộ công thức";
+  else { out.title=doc.sheets[0]?.title||"Trang công thức"; if(doc.sheets[0]?.subtitle) out.subtitle=doc.sheets[0].subtitle; }
+  out.paper=doc.paper||"a4"; if(doc.columns) out.columns=doc.columns;
+  ["author","school","info","date"].forEach(k=>{ if(doc[k]) out[k]=doc[k]; });
+  if(doc.page_numbers===false) out.page_numbers=false;
+  if(doc.eco) out.eco=true;
+  if(multi && typeof doc.toc==="boolean") out.toc=doc.toc;
+  if(doc.fit===false) out.fit=false;
+  if(multi){
+    out.pages=doc.sheets.map(sh=>{
+      const p={title:sh.title}; if(sh.subtitle) p.subtitle=sh.subtitle; if(sh.columns) p.columns=sh.columns;
+      return Object.assign(p,sectionsJSON(sh.sections));
+    });
+  } else Object.assign(out,sectionsJSON(doc.sheets[0]?doc.sheets[0].sections:[]));
+  return JSON.stringify(out,null,2)+"\n";
+}
+
+/* ---------- xem trước ---------- */
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function rich(t, display){
+  return String(t||"").split(/(\$\$[\s\S]+?\$\$|\$[^$]+?\$)/).map(p=>{
+    if(!p) return "";
+    if(p.startsWith("$$")) return esc(p);
+    if(p.startsWith("$")&&p.length>2) return esc(display?"$\\displaystyle "+p.slice(1):p);
+    return esc(p).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>");
+  }).join("");
+}
+function itemHTML(it){
+  const d=["item","center","box"].includes(it.type);
+  const r=rich(it.text,d);
+  switch(it.type){
+    case "item": return `<div class="s-item"><span class="n">${it.n})</span><span>${r}</span></div>`;
+    case "heading": return `<div class="s-h">${r}</div>`;
+    case "center": return `<div class="s-center">${r.startsWith("$$")?r.replace(/^\$\$/,"$$$\\displaystyle "):r}</div>`;
+    case "box": return `<div class="s-frame">${r}</div>`;
+    case "note": return `<div class="s-note">${r}</div>`;
+    case "bullet": return `<div class="s-bul">${r}</div>`;
+    default: return `<div>${r}</div>`;
+  }
+}
+function weight(s){ let w=1.6; s.items.forEach(it=>{ const t=it.text||""; w+=1+0.6*(t.includes("frac"))+0.3*(t.length>90); }); return w; }
+function colsOf(doc,sh){ if(doc.eco) return doc.paper==="a5"?2:3; return Math.max(1,sh.columns||doc.columns||2); }
+function topicHTML(doc,sh){
+  const ncol=colsOf(doc,sh); let idx=0; let html="";
+  if(sh.title) html+=`<div class="s-title"><span>${rich(sh.title)}</span></div>`;
+  if(sh.subtitle) html+=`<div class="s-sub">${rich(sh.subtitle)}</div>`;
+  const box=s=>{
+    if(s.style==="ghichu") return `<div class="s-foot"><div class="s-fh">${rich(s.title)}:</div>${s.items.map(itemHTML).join("")}</div>`;
+    const c=normColor(s.color); const hex=c.hex||PALETTE[CYCLE[idx%CYCLE.length]]; idx++;
+    return `<div class="s-box" style="--c:${hex}"><div class="s-head">${rich(s.title)}</div><div class="s-body">${s.items.map(itemHTML).join("")}</div></div>`;
+  };
+  const secs=sh.sections; let k=0;
+  while(k<secs.length){
+    if(secs[k].full){ html+=box(secs[k]); k++; continue; }
+    const cols=Array.from({length:ncol},()=>[]), h=Array(ncol).fill(0);
+    while(k<secs.length&&!secs[k].full){
+      const s=secs[k++]; let c=s.col?(s.col-1)%ncol:h.indexOf(Math.min(...h));
+      cols[c].push(box(s)); h[c]+=weight(s);
+    }
+    html+=`<div class="s-grid" style="--cols:${ncol}">${cols.map(c=>`<div class="s-col">${c.join("")}</div>`).join("")}</div>`;
+  }
+  return html;
+}
+function hasToc(doc){ return doc.sheets.length>1 && !doc.eco && doc.toc!==false; }
+function renderSheet(doc){
+  lastDoc=doc;
+  const m=getMeta(), info=esc(footerInfo(m).join("  ·  "));
+  const pf=(i,n)=> (info||m.page_numbers) ? `<div class="s-pagefoot"><span>${info}</span><span>${m.page_numbers?`Trang ${i} / ${n}`:""}</span></div>` : "";
+  let html="";
+  if(doc.eco){
+    // tiết kiệm: các chủ đề chạy nối tiếp nhau, không ngắt trang
+    html=`<div class="sheet eco">${doc.sheets.map(sh=>`<section class="s-topic">${topicHTML(doc,sh)}</section>`).join("")}${pf(1,1)}</div>`;
+  } else {
+    const toc=hasToc(doc), N=doc.sheets.length+(toc?1:0);
+    if(toc){
+      const name=doc.set_title||"Bộ công thức";
+      html+=`<div class="sheet toc"><div class="t-name">${rich(name)}</div><div class="t-rule"></div><div class="t-cap">MỤC LỤC</div><ol class="t-list">${
+        doc.sheets.map((sh,i)=>`<li><span class="t-n" style="color:${PALETTE[CYCLE[i%CYCLE.length]]}">${i+1}.</span><span class="t-t">${rich(sh.title)}</span><span class="t-p">${i+2}</span></li>`).join("")
+      }</ol>${pf(1,N)}</div>`;
+    }
+    doc.sheets.forEach((sh,i)=>{ html+=`<div class="sheet">${topicHTML(doc,sh)}${pf(i+1+(toc?1:0),N)}</div>`; });
+  }
+  const el=$("sheet"); el.innerHTML=html||'<div class="sheet"><p style="color:#777">Chưa có nội dung.</p></div>';
+  $("prevInfo").textContent = doc.eco ? `In siêu tiết kiệm: ${doc.sheets.length} chủ đề in nối tiếp, ${colsOf(doc,{})} cột, không nền màu.`
+    : `${doc.sheets.length} chủ đề → ${doc.sheets.length+(hasToc(doc)?1:0)} trang${hasToc(doc)?" (có trang mục lục)":""}.`;
+  if(window.MathJax&&MathJax.typesetPromise){
+    MathJax.typesetClear&&MathJax.typesetClear([el]);
+    MathJax.typesetPromise([el]).catch(e=>{ $("prevInfo").textContent="Lỗi hiển thị công thức: "+e.message; });
+  } else $("prevInfo").textContent="Chưa tải được bộ hiển thị công thức (MathJax); công thức hiện dạng mã LaTeX.";
+}
+
+/* ---------- in PDF ---------- */
+let lastDoc=null;
+const inArtifact = !!(window.claude && typeof window.claude.use==="function");
+const cssStr = s => '"'+String(s).replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"';
+const PAPER={a4:[210,297],a3:[297,420],a5:[148,210]};
+function buildPrintHTML(){
+  const m=getMeta(), info=footerInfo(m).join("   ·   ");
+  const key=(lastDoc&&PAPER[lastDoc.paper])?lastDoc.paper:"a4";
+  const [pw,ph]=PAPER[key], eco=!!(lastDoc&&lastDoc.eco);
+  const mg=eco?[7,7,12]:[11,11,17];                 // trên/ngang/dưới (mm)
+  const px=mm=>Math.floor(mm*96/25.4);
+  const W=px(pw-2*mg[1]), H=px(ph-mg[0]-mg[2]-3);
+  const mjx=(document.getElementById("MJX-SVG-styles")||{}).textContent||"";
+  const box=`font:${eco?7:8}pt "Be Vietnam Pro",Arial,sans-serif;color:#555;vertical-align:top;padding-top:2mm;border-top:0.6pt solid #bbb`;
+  const title=(lastDoc&&(lastDoc.set_title||lastDoc.sheets[0]?.title))||"Trang công thức";
+  const base=eco?11:12.5;
+  return `<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>${esc(title)}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap">
+<style>:root{--f-ui:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;--f-sheet:"Noto Serif","Times New Roman",serif}
+${mjx}
+${$("sheetCss").textContent}
+@page{size:${key.toUpperCase()};margin:${mg[0]}mm ${mg[1]}mm ${mg[2]}mm;
+ @bottom-left{content:${cssStr(info)};${box}}
+ @bottom-right{content:${m.page_numbers?'"Trang " counter(page) " / " counter(pages)':'""'};${box};text-align:right}}
+html,body{margin:0;background:#fff}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pages{display:block}
+.sheet{width:${W}px;padding:0;margin:0 auto;box-shadow:none;font-size:${base}px;break-after:page}
+.sheet:last-child{break-after:auto}
+.s-box,.s-foot,.s-item,.s-center,.s-frame{break-inside:avoid}
+.s-pagefoot{display:none}
+@media screen{body{background:#e9e7e1}.sheet{margin:16px auto;padding:26px;background:#fff;box-sizing:content-box}
+ .tip{max-width:${W}px;margin:16px auto 0;font:14px "Be Vietnam Pro",Arial,sans-serif;color:#333}}
+@media print{.tip{display:none}}
+</style></head><body>
+<p class="tip">Bấm <b>Ctrl+P</b> (Mac: Cmd+P) → chọn <b>Lưu dưới dạng PDF</b>, bật <b>Đồ hoạ nền</b>, tắt <b>Đầu trang và chân trang</b>.</p>
+<div class="pages">${$("sheet").innerHTML}</div>
+<scr${""}ipt>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){
+  /* mỗi trang chủ đề tự thu chữ cho vừa 1 tờ giấy */
+  document.querySelectorAll(".sheet:not(.eco):not(.toc)").forEach(function(s){
+    var f=${base}; s.style.padding="0";
+    while(s.scrollHeight>${H} && f>7.5){ f-=0.5; s.style.fontSize=f+"px"; }
+  });
+  setTimeout(function(){window.print()},350);
+});<\/script>
+</body></html>`;
+}
+async function printPDF(){
+  if(!lastDoc){ check(); }
+  if(!lastDoc){ toast("Chưa có nội dung để in."); return; }
+  if(window.MathJax&&MathJax.startup&&MathJax.startup.promise){ try{ await MathJax.startup.promise; }catch{} }
+  const html=buildPrintHTML();
+  const name=(($("fname").value.trim()||"congthuc").replace(/\.(md|json|html)$/i,""))+(lastDoc.eco?"-tiet-kiem":"")+"-ban-in.html";
+  if(inArtifact){
+    if(!dlApi){ toast("Trang này không cho in trực tiếp. Mở file soan-trang-cong-thuc.html trên máy để in."); return; }
+    try{ await dlApi.save({filename:name,data:html}); toast("Đã lưu bản in. Mở file đó bằng Chrome, hộp thoại in sẽ tự hiện."); }
+    catch(e){ toast(e&&e.code==="declined"?"Đã huỷ.":"Không lưu được bản in ở đây."); }
+    return;
+  }
+  const f=document.createElement("iframe");
+  f.setAttribute("aria-hidden","true");
+  f.style.cssText="position:fixed;left:-10000px;top:0;width:1200px;height:800px;border:0";
+  document.body.appendChild(f);
+  f.srcdoc=html;
+  setTimeout(()=>f.remove(),120000);
+  toast("Đang mở hộp thoại in…");
+}
+
+/* ---------- hành động ---------- */
+let outKind="";
+function summary(doc){ return `${doc.sheets.length>1?doc.sheets.length+" chủ đề, ":""}${nSec(doc)} khối, ${nItem(doc)} dòng`; }
+function run(target){
+  try{
+    const {doc:raw,warns,kind}=parseAny($("src").value);
+    syncMeta(raw); const doc=withMeta(raw);
+    const all=[...warns,...lint(doc)];
+    $("out").value = target==="md" ? toMD(doc) : toJSON(doc);
+    outKind=target; setBadge("outBadge",target);
+    const errs=all.filter(x=>x[0]==="err").length;
+    all.unshift(["ok",`Đọc ${kind.toUpperCase()}: ${summary(doc)} → đã sinh ${target==="md"?".md":"JSON"}${errs?" (còn lỗi cần sửa)":""}.`]);
+    showMsgs(all); renderSheet(doc);
+  }catch(e){ showMsgs([["err",e.message]]); }
+}
+function check(){
+  try{
+    const {doc:raw,warns,kind}=parseAny($("src").value);
+    syncMeta(raw); const doc=withMeta(raw);
+    const all=[...warns,...lint(doc)];
+    if(!all.some(x=>x[0]!=="ok")) all.unshift(["ok",`${kind.toUpperCase()} đúng chuẩn: ${summary(doc)}.`]);
+    showMsgs(all); renderSheet(doc);
+  }catch(e){ showMsgs([["err",e.message]]); }
+}
+function setBadge(id,k){ const b=$(id); b.textContent=k?k.toUpperCase():"—"; b.className="badge "+(k||""); }
+
+async function copyText(text,label){
+  if(!text){ toast("Chưa có gì để sao chép."); return; }
+  try{ await navigator.clipboard.writeText(text); toast(label||"Đã sao chép."); }
+  catch{ const ta=$("out"); if(text===ta.value){ ta.focus(); ta.select(); } toast("Trình duyệt chặn sao chép tự động — đã chọn sẵn, bấm Ctrl+C."); }
+}
+
+$("btnToMd").onclick=()=>run("md");
+$("btnToJson").onclick=()=>run("json");
+$("btnCheck").onclick=check;
+$("btnMauMd").onclick=()=>{ $("src").value=$("sampleMd").textContent.trim()+"\n"; onInput(); check(); };
+$("btnMauBo").onclick=()=>{ $("src").value=$("sampleBo").textContent.trim()+"\n"; onInput(); check(); };
+$("btnMauJson").onclick=()=>{ $("src").value=$("sampleJson").textContent.trim()+"\n"; onInput(); check(); };
+$("btnClear").onclick=()=>{ $("src").value=""; onInput(); showMsgs([]); };
+$("btnCopy").onclick=()=>copyText($("out").value,"Đã sao chép kết quả.");
+$("btnSwap").onclick=()=>{ if(!$("out").value) return; $("src").value=$("out").value; onInput(); check(); toast("Đã đưa kết quả lên ô nhập."); };
+$("btnPreview").onclick=check;
+$("btnPrint").onclick=printPDF;
+if(inArtifact){ $("btnPrint").textContent="Lưu bản in (.html)"; $("printNote").innerHTML="Trong Claude không mở được hộp thoại in. Bấm <b>Lưu bản in</b>, mở file .html vừa lưu bằng Chrome: hộp thoại in tự hiện, chọn <b>Lưu dưới dạng PDF</b>, bật <b>Đồ hoạ nền</b>, tắt <b>Đầu trang và chân trang</b>. Thông tin chân trang cũng được ghi vào .md/.json để build.py in ra PDF Typst."; }
+$("mToday").onclick=()=>{ $("mDate").value=today(); saveMeta(); if(lastDoc) renderSheet(lastDoc); };
+["mAuthor","mSchool","mInfo","mDate","mPN","mEco","mToc"].forEach(id=>$(id).addEventListener(/^m(PN|Eco|Toc)$/.test(id)?"change":"input",()=>{ saveMeta(); if(lastDoc) renderSheet(withMeta(lastDoc)); }));
+let dlApi=null;
+if(window.claude && typeof window.claude.use==="function"){ window.claude.use("downloads").then(d=>{ dlApi=d; }).catch(()=>{}); }
+$("btnDl").onclick=async()=>{
+  const t=$("out").value; if(!t){ toast("Bấm “Sinh .md” hoặc “Sinh JSON” trước."); return; }
+  const ext=outKind==="json"?".json":".md";
+  const name=($("fname").value.trim()||"congthuc").replace(/\.(md|json)$/i,"")+ext;
+  if(dlApi){
+    try{ await dlApi.save({filename:name,data:t}); toast("Đã lưu "+name+"."); }
+    catch(e){ toast(e&&e.code==="declined"?"Đã huỷ lưu file.":"Không lưu được ở đây, hãy dùng Sao chép."); }
+    return;
+  }
+  try{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([t],{type:"text/plain;charset=utf-8"})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); toast("Đang tải "+name+"."); }
+  catch{ toast("Không tải được ở đây, hãy dùng Sao chép."); }
+};
+$("fileIn").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ $("src").value=r.result; $("fname").value=f.name.replace(/\.(md|json|txt)$/i,""); onInput(); check(); }; r.readAsText(f,"utf-8");
+  e.target.value="";
+};
+function onInput(){ setBadge("inBadge",detect($("src").value)); try{localStorage.setItem("xtct-src",$("src").value);}catch{} }
+$("src").addEventListener("input",onInput);
+
+/* tabs */
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["preview","prompt","spec"].forEach(t=>$("tab-"+t).hidden=(t!==b.dataset.tab));
+});
+
+/* swatches */
+$("swatches").innerHTML=Object.entries(PALETTE).map(([k,v])=>`<span class="sw"><i style="background:${v}"></i>${k}</span>`).join("");
+
+/* ---------- prompt cho AI ---------- */
+function pv(){
+  const topics=$("pTopic").value.split("\n").map(s=>s.trim()).filter(Boolean);
+  return {topics:topics.length?topics:["(chủ đề)"], grade:$("pGrade").value, book:$("pBook").value.trim()||"Kết nối tri thức", n:$("pN").value, set:$("pSet").value.trim()};
+}
+function COMMON(v){
+  const multi=v.topics.length>1;
+  return `Bạn là giáo viên Toán THPT giỏi, soạn ${multi?`BỘ ${v.topics.length} trang`:"1 trang"} tóm tắt công thức để in A4 cho học sinh.
+${multi?"Các chủ đề (mỗi chủ đề là 1 trang riêng, đúng thứ tự):\n"+v.topics.map((t,i)=>`  ${i+1}. ${t}`).join("\n"):"Chủ đề: "+v.topics[0]}
+Đối tượng: ${v.grade} — bộ sách ${v.book} (chương trình GDPT 2018).
+Yêu cầu nội dung:
+- Mỗi trang khoảng ${v.n} khối kiến thức, mỗi khối 3–8 dòng, tổng không quá 40 dòng để vừa 1 trang A4.
+- Chọn công thức trọng tâm, đúng ký hiệu SGK, ghi điều kiện ngay sau công thức (ví dụ $a \\neq 0$).
+- Mỗi dòng chỉ 1 công thức hoặc 1 ý ngắn; chữ tiếng Việt có dấu.
+- Mỗi trang có 1 khối ghi chú cuối (2–3 gạch đầu dòng: mẹo, lỗi hay gặp).
+Yêu cầu định dạng công thức:
+- Viết LaTeX trong $...$ (công thức đặt giữa dòng dùng $$...$$ trên MỘT dòng).
+- KHÔNG dùng \\[ \\], \\( \\), \\begin{align}, không dùng bảng, không dùng hình.
+- Chỉ dùng lệnh LaTeX phổ biến: \\frac \\sqrt \\cdot \\neq \\le \\ge \\pm \\Rightarrow \\iff \\in \\mathbb{R} \\left( \\right) \\text{} \\vec \\overrightarrow \\sin \\cos \\log \\lim \\sum \\begin{cases}.
+- Màu khối chọn trong: do, cam, xanhla, xanhduong, xanhreu, vangreu, dohong, hong, tim, nau.
+- KHÔNG viết dòng phụ đề, không ghi tên lớp hay bộ sách vào file.`;
+}
+function promptMD(){
+  const v=pv(), multi=v.topics.length>1;
+  const setName=v.set||"Bộ công thức "+v.grade.replace(/^Lớp/,"Toán");
+  return COMMON(v)+`
+
+Chỉ trả về MỘT khối mã \`\`\`markdown, không giải thích thêm. Cú pháp bắt buộc:
+- Đầu file là các dòng cấu hình, MỖI DÒNG @ ĐỨNG RIÊNG MỘT DÒNG, không viết hai dòng @ trên cùng một dòng:
+${multi?`@tên bộ: ${setName}\n`:""}@khổ: a4
+@cột: 2
+- ${multi?"Mỗi chủ đề bắt đầu bằng 1 dòng: # Tên chủ đề  (mỗi dòng # được in thành 1 trang)":"Tiếp theo là 1 dòng: # Tên chủ đề"}
+- Mỗi khối: ## 1. Tên khối {màu}   (đánh số khối lại từ 1 trong mỗi trang)
+- Dòng đánh số: 1. $công thức$   (đánh số lại từ 1 trong mỗi khối)
+- Tiêu đề nhỏ trong khối: ### Tên mục
+- Công thức giữa dòng: $$công thức$$
+- Kết quả cần đóng khung: > $công thức$
+- Lưu ý đỏ: ! nội dung lưu ý
+- Đoạn văn: viết dòng thường (có thể chứa $...$, **đậm**)
+- Khối ghi chú cuối mỗi trang: ## Ghi chú {note}  rồi các dòng "- **Ý chính:** nội dung"
+
+Ví dụ đúng chuẩn:
+${multi?`@tên bộ: ${setName}\n`:""}@khổ: a4
+@cột: 2
+
+# Quy luật số mũ
+## 1. Phép nhân, chia {do}
+1. $a^m \\cdot a^n = a^{m+n}$
+2. $\\frac{a^m}{a^n} = a^{m-n} \\quad (a \\neq 0)$
+! Với $a = 0$, biểu thức $a^0$ không xác định.
+
+## Ghi chú {note}
+- **Mẹo:** đưa về cùng cơ số trước khi tính.`;
+}
+function promptJSON(){
+  const v=pv(), multi=v.topics.length>1;
+  const setName=v.set||"Bộ công thức "+v.grade.replace(/^Lớp/,"Toán");
+  const page=(ind)=>`${ind}"title": "Tên chủ đề",
+${ind}"sections": [
+${ind}  {
+${ind}    "title": "1. Tên khối",
+${ind}    "color": "do",
+${ind}    "items": [
+${ind}      "$a^m \\\\cdot a^n = a^{m+n}$",
+${ind}      "$\\\\frac{a^m}{a^n} = a^{m-n} \\\\quad (a \\\\neq 0)$"
+${ind}    ]
+${ind}  },
+${ind}  {
+${ind}    "title": "2. Khối có tiêu đề nhỏ",
+${ind}    "color": "xanhduong",
+${ind}    "numbered": false,
+${ind}    "items": [
+${ind}      {"type": "heading", "text": "Phương trình bậc hai"},
+${ind}      {"type": "center", "text": "$$x = \\\\frac{-b \\\\pm \\\\sqrt{\\\\Delta}}{2a}$$"},
+${ind}      {"type": "box", "text": "$x_1 + x_2 = -\\\\frac{b}{a}$"},
+${ind}      {"type": "note", "text": "Cần $a \\\\neq 0$."}
+${ind}    ]
+${ind}  }
+${ind}],
+${ind}"footer": { "title": "Ghi chú", "items": ["**Mẹo:** nội dung", "Lỗi hay gặp: ..."] }`;
+  const body = multi
+    ? `{
+  "title": "${setName}",
+  "paper": "a4",
+  "columns": 2,
+  "pages": [
+    {
+${page("      ")}
+    }
+    // … mỗi chủ đề thêm 1 object như trên vào "pages", đúng thứ tự
+  ]
+}`
+    : `{
+${page("  ")},
+  "paper": "a4",
+  "columns": 2
+}`;
+  return COMMON(v)+`
+
+Chỉ trả về MỘT khối mã \`\`\`json hợp lệ (JSON.parse được), không giải thích thêm, theo đúng cấu trúc:
+${body}
+Quy tắc bắt buộc:
+- Trong chuỗi JSON, MỌI dấu \\ của LaTeX phải viết thành \\\\ (ví dụ "\\\\frac", "\\\\neq", "\\\\sqrt").
+- Chuỗi thường trong "items" là dòng có đánh số tự động; dùng object {"type": ...} cho heading, center, box, note, text, bullet.
+- "type" chỉ được là: heading, center, box, note, text, bullet, item.
+${multi?'- Không để dòng chú thích "// …" trong kết quả.\n':""}- Không thêm khóa "subtitle" hay khóa nào khác ngoài các khóa ở trên.`;
+}
+function refreshPrompts(){ $("pMd").textContent=promptMD(); $("pJson").textContent=promptJSON(); }
+["pTopic","pGrade","pBook","pN","pSet"].forEach(id=>$(id).addEventListener("input",refreshPrompts));
+$("cpPmd").onclick=()=>copyText(promptMD(),"Đã sao chép prompt .md.");
+$("cpPjson").onclick=()=>copyText(promptJSON(),"Đã sao chép prompt JSON.");
+refreshPrompts();
+
+
+/* ================= Trình chiếu từng mục công thức (16:9) ================= */
+const THEMES=[
+  {id:"sang",name:"Sáng – màu khối",dot:"#C0222E"},
+  {id:"gradient",name:"Rực rỡ",dot:"linear-gradient(135deg,#d46a1c,#7c3aed)"},
+  {id:"giay",name:"Giấy kem",dot:"#e8d9b9"},
+  {id:"bangden",name:"Bảng đen phấn",dot:"#1e3b2f"},
+  {id:"dem",name:"Đêm xanh",dot:"#0f1730"},
+  {id:"tuongphan",name:"Tương phản cao",dot:"#ffe600"}
+];
+const SH={slides:[],i:0,step:0,opts:{theme:"sang",bold:1,zoom:1,reveal:false}};
+try{ Object.assign(SH.opts,JSON.parse(localStorage.getItem("xtct-show")||"{}")); }catch{}
+function saveShow(){ try{localStorage.setItem("xtct-show",JSON.stringify(SH.opts));}catch{} }
+
+// chia khối dài thành nhiều slide cho chữ đủ to
+function chunkItems(items){
+  const out=[]; let cur=[], w=0;
+  const wt=it=>{ const t=it.text||""; return (it.type==="heading"?0.7:1)+(/\\frac|\\dfrac|\\sqrt|\\sum|\\lim|cases/.test(t)?0.5:0)+(t.length>70?0.5:0); };
+  items.forEach(it=>{
+    const x=wt(it);
+    if(cur.length && (w+x>6.5 || (it.type==="heading" && w>4))){ out.push(cur); cur=[]; w=0; }
+    cur.push(it); w+=x;
+  });
+  if(cur.length) out.push(cur);
+  // tiêu đề nhỏ không đứng một mình cuối slide
+  for(let i=0;i<out.length-1;i++){ const c=out[i]; if(c.length>1 && c[c.length-1].type==="heading") out[i+1].unshift(c.pop()); }
+  return out;
+}
+function buildSlides(doc){
+  const S=[], multi=doc.sheets.length>1;
+  if(multi) S.push({kind:"cover",kicker:"Bộ công thức",title:doc.set_title||"Bộ công thức",chips:doc.sheets.map((s,i)=>({t:s.title,c:PALETTE[CYCLE[i%CYCLE.length]]})),c:"#C0222E"});
+  doc.sheets.forEach((sh,si)=>{
+    let idx=0;
+    const secs=sh.sections.map(s=>{ const c= s.style==="ghichu" ? "#555555" : (normColor(s.color).hex||PALETTE[CYCLE[idx%CYCLE.length]]); if(s.style!=="ghichu") idx++; return {s,c}; });
+    S.push({kind:"cover",kicker:multi?`Chủ đề ${si+1}`:"Công thức",title:sh.title||"Trang công thức",chips:secs.filter(x=>x.s.style!=="ghichu").map(x=>({t:x.s.title,c:x.c})),c:secs[0]?secs[0].c:"#C0222E"});
+    secs.forEach(({s,c})=>{
+      const parts=chunkItems(s.items);
+      parts.forEach((items,pi)=>S.push({kind:"sec",topic:sh.title,title:s.title+(parts.length>1?` (${pi+1}/${parts.length})`:""),items,c}));
+    });
+  });
+  return S;
+}
+function stepsOf(sl){ return sl.kind==="sec" && SH.opts.reveal ? sl.items.length : 0; }
+function slideHTML(sl){
+  if(sl.kind==="cover") return `<div class="slide"><div class="sl-cover"><div class="k">${esc(sl.kicker)}</div><h2>${rich(sl.title)}</h2><div class="bar"></div>
+    <div class="chips">${sl.chips.map(x=>`<span style="--cc:${x.c}">${rich(x.t)}</span>`).join("")}</div></div></div>`;
+  return `<div class="slide"><div class="sl-band"><span>${rich(sl.title)}</span><small>${rich(sl.topic||"")}</small></div>
+    <div class="sl-body"><div class="sl-content">${sl.items.map(itemHTML).join("")}</div></div></div>`;
+}
+let fitToken=0;
+async function renderShow(){
+  const st=$("stage"), sl=SH.slides[SH.i]; if(!sl) return;
+  st.dataset.theme=SH.opts.theme; st.dataset.bold=String(SH.opts.bold);
+  st.style.setProperty("--zoom",SH.opts.zoom);
+  st.style.setProperty("--c",sl.c);
+  const m=getMeta(), info=footerInfo(m).slice(0,2).join("  ·  ");
+  st.innerHTML=slideHTML(sl)+`<div class="sl-foot"><span>${esc(info)}</span><span>${SH.i+1} / ${SH.slides.length}</span></div><div class="sl-prog" style="width:${(SH.i+1)/SH.slides.length*100}%"></div>`;
+  // hiện từng dòng
+  const rows=[...st.querySelectorAll(".sl-content>div")];
+  if(SH.opts.reveal && sl.kind==="sec"){ rows.forEach((r,k)=>{ if(k>=SH.step) r.classList.add("later"); if(k===SH.step-1) r.classList.add("now"); }); }
+  $("showCnt").textContent=`${SH.i+1} / ${SH.slides.length}`;
+  $("showJump").value=String(SH.i);
+  const tk=++fitToken;
+  if(window.MathJax&&MathJax.typesetPromise){ try{ MathJax.typesetClear&&MathJax.typesetClear([st]); await MathJax.typesetPromise([st]); }catch{} }
+  if(tk!==fitToken) return;
+  // tự thu nhỏ khi nội dung tràn khung
+  const body=st.querySelector(".sl-body"), ct=st.querySelector(".sl-content");
+  if(body&&ct){
+    let f=1.7; ct.style.setProperty("--fit",f);   // phóng to tối đa rồi thu dần cho vừa khung
+    const room=()=>body.clientHeight-parseFloat(getComputedStyle(body).paddingTop)-parseFloat(getComputedStyle(body).paddingBottom);
+    const wide=()=>ct.getBoundingClientRect().width>body.clientWidth*0.9+1 && [...ct.querySelectorAll("svg")].some(s=>s.getBoundingClientRect().width>=ct.clientWidth*0.97);
+    while(f>0.45 && (ct.scrollHeight>room()+1 || wide())){ f-=0.05; ct.style.setProperty("--fit",f); }
+  }
+}
+function go(d){
+  const sl=SH.slides[SH.i], n=stepsOf(sl);
+  if(d>0 && n && SH.step<n){ SH.step++; renderShow(); return; }
+  if(d<0 && n && SH.step>0){ SH.step--; renderShow(); return; }
+  const j=Math.min(SH.slides.length-1,Math.max(0,SH.i+d)); if(j===SH.i) return;
+  SH.i=j; const nn=stepsOf(SH.slides[j]); SH.step= d>0 ? (nn?1:0) : nn; renderShow();
+}
+function jump(j){ SH.i=j; SH.step=stepsOf(SH.slides[j])?1:0; renderShow(); }
+function openShow(){
+  if(!lastDoc) check();
+  if(!lastDoc||!lastDoc.sheets.length){ toast("Chưa có dữ liệu để trình chiếu. Dán .md/JSON rồi bấm Kiểm tra."); return; }
+  SH.slides=buildSlides(lastDoc); SH.i=0; SH.step=0;
+  $("showJump").innerHTML=SH.slides.map((s,k)=>`<option value="${k}">${k+1}. ${esc((s.kind==="cover"?"▸ ":"")+String(s.title).replace(/\$[^$]*\$/g,"…"))}</option>`).join("");
+  syncShowCtl();
+  $("show").hidden=false; document.body.style.overflow="hidden";
+  renderShow(); poke(); toggleMenu(!!SH.opts.menuHidden);
+  try{ $("show").focus(); }catch{}
+}
+function closeShow(){ $("show").hidden=true; $("showPill").hidden=true; document.body.style.overflow=""; if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); } }
+function syncShowCtl(){
+  $("showThemes").innerHTML=THEMES.map(t=>`<button type="button" title="${t.name}" aria-label="${t.name}" aria-pressed="${t.id===SH.opts.theme}" data-t="${t.id}" style="background:${t.dot}"></button>`).join("");
+  $("showBold").value=String(SH.opts.bold); $("showReveal").checked=!!SH.opts.reveal;
+}
+let idleT;
+function toggleMenu(force){
+  const c=$("showCtl"), hide= force!==undefined ? force : !c.classList.contains("collapsed");
+  c.classList.toggle("collapsed",hide); $("showPill").hidden=!hide || $("show").hidden;
+  SH.opts.menuHidden=hide; saveShow();
+}
+$("showHide").onclick=()=>toggleMenu(true);
+$("showPill").onclick=()=>toggleMenu(false);
+function poke(){ const c=$("showCtl"); c.classList.remove("idle"); clearTimeout(idleT); idleT=setTimeout(()=>c.classList.add("idle"),2600); }
+$("showThemes").addEventListener("click",e=>{ const b=e.target.closest("button[data-t]"); if(!b) return; SH.opts.theme=b.dataset.t; saveShow(); syncShowCtl(); renderShow(); });
+$("showBold").onchange=e=>{ SH.opts.bold=+e.target.value; saveShow(); renderShow(); };
+$("showReveal").onchange=e=>{ SH.opts.reveal=e.target.checked; saveShow(); SH.step=stepsOf(SH.slides[SH.i])?1:0; renderShow(); };
+$("showPrev").onclick=()=>go(-1); $("showNext").onclick=()=>go(1);
+$("showSmaller").onclick=()=>{ SH.opts.zoom=Math.max(0.7,+(SH.opts.zoom-0.1).toFixed(2)); saveShow(); renderShow(); };
+$("showBigger").onclick=()=>{ SH.opts.zoom=Math.min(1.6,+(SH.opts.zoom+0.1).toFixed(2)); saveShow(); renderShow(); };
+$("showJump").onchange=e=>jump(+e.target.value);
+$("showClose").onclick=closeShow;
+$("showFull").onclick=()=>{ const el=$("show"); if(document.fullscreenElement) document.exitFullscreen().catch(()=>{}); else if(el.requestFullscreen) el.requestFullscreen().catch(()=>toast("Trình duyệt không cho toàn màn hình ở đây — bấm F11.")); };
+$("stage").addEventListener("click",e=>{ const r=$("stage").getBoundingClientRect(); go(e.clientX<r.left+r.width*0.3?-1:1); });
+$("show").addEventListener("mousemove",poke);
+$("show").addEventListener("touchstart",poke,{passive:true});
+let tx=null;
+$("show").addEventListener("touchstart",e=>{ tx=e.touches[0].clientX; },{passive:true});
+$("show").addEventListener("touchend",e=>{ if(tx==null) return; const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50) go(dx<0?1:-1); tx=null; });
+document.addEventListener("keydown",e=>{
+  if($("show").hidden) return;
+  if(e.target.tagName==="SELECT") return;
+  const k=e.key;
+  if(["ArrowRight","ArrowDown","PageDown"," ","Enter"].includes(k)){ e.preventDefault(); go(1); }
+  else if(["ArrowLeft","ArrowUp","PageUp","Backspace"].includes(k)){ e.preventDefault(); go(-1); }
+  else if(k==="Home") jump(0);
+  else if(k==="End") jump(SH.slides.length-1);
+  else if(k==="Escape"){ if(!document.fullscreenElement) closeShow(); }
+  else if(k==="f"||k==="F") $("showFull").click();
+  else if(k==="h"||k==="H"){ toggleMenu(); return; }
+  else if(k==="t"||k==="T"){ const i=THEMES.findIndex(t=>t.id===SH.opts.theme); SH.opts.theme=THEMES[(i+1)%THEMES.length].id; saveShow(); syncShowCtl(); renderShow(); }
+  else if(k==="b"||k==="B"){ SH.opts.bold=(SH.opts.bold+1)%3; saveShow(); syncShowCtl(); renderShow(); }
+  else if(k==="+"||k==="=") $("showBigger").click();
+  else if(k==="-") $("showSmaller").click();
+  poke();
+});
+window.addEventListener("resize",()=>{ if(!$("show").hidden) renderShow(); });
+$("btnShow").onclick=openShow; $("btnShow2").onclick=openShow;
+
+/* ---------- khởi động: nạp bản nháp cũ hoặc mẫu .md ---------- */
+loadMeta();
+let saved=""; try{ saved=localStorage.getItem("xtct-src")||""; }catch{}
+$("src").value = saved || ($("sampleMd").textContent.trim()+"\n");
+onInput();
+function boot(){ try{ const {doc:raw}=parseAny($("src").value); syncMeta(raw); const doc=withMeta(raw); $("out").value=toJSON(doc); outKind="json"; setBadge("outBadge","json"); check(); }catch(e){ showMsgs([["err",e.message]]); } }
+if(window.MathJax && MathJax.startup && MathJax.startup.promise) MathJax.startup.promise.then(boot).catch(boot); else boot();
+})();
+</script>
